@@ -7,8 +7,9 @@ protocol _RouteParamsMapping {
     func mapping(value: String) -> Bool
 }
 
-/// When Route initializes a controller, it maps params to params marked as @RouteParams in the controller instance
+/// When Route initializes a controller, it maps params to params marked as @RouteParams in the controller.
 ///
+/// Example:
 /// ```swift
 /// final class UserController: UIViewController {
 ///     // Set `userName` when route params.keys contains any one(`name` or `nickname`)

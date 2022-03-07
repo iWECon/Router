@@ -1,5 +1,8 @@
 import UIKit
 
+/// Collect mappping info
+///
+/// use `Router.load(mappingInfo: MappingInfo...) to load it`
 public struct MappingInfo {
     public let group: String
     public let maps: [RouteMap]

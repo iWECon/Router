@@ -136,7 +136,7 @@ public extension Router {
         // MARK: Module handle
         // action
         if let action = self.actions[routeInfo.routeKey] {
-            return action.target.routeAction(routeInfo)
+            return action.target.routeAction(routeInfo.params)
         }
         // route
         if let route = self.routes[routeInfo.routeKey],
