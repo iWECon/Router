@@ -12,20 +12,31 @@ enum MessageRoute: ModuleRoute {
     }
 }
 
+final class CController: UIViewController {
+    
+    @RouteParams("id", "userId") var userId: String = ""
+    @RouteParams("name", "nickname") var nickname: String = ""
+    @RouteParams("isSingle", "single") var isSingle: Bool = false
+    
+    @RouteParams("t", "birthdayTimestamp", mapping: { value in
+        (value as NSString).doubleValue
+    }) var birthdayTimestamp: TimeInterval = 0
+    
+    override func didFinishMapping() {
+        print("finish mapping: \(userId), \(nickname), \(isSingle), \(birthdayTimestamp)")
+    }
+}
+
+
 final class RouterTests: XCTestCase {
+    
     func testExample() throws {
-        // This is an example of a functional test case.
-        // Use XCTAssert and related functions to verify your tests produce the correct
-        // results.
         
-        // native://user/info?{*id/userId}
-        let userRoute = MappingInfo(group: "user", maps: [
-            .route("/info?{*id/userId}", target: UIViewController.self, remark: "user info")
+        let userMapping = MappingInfo(group: "user", maps: [
+            .route("/info?{*id/userId}&{*name/nickname}&{*age}", target: CController.self, remark: "user info")
         ])
+        Router.load(mappingInfo: userMapping)
         
-        Router.load(routeInfo: userRoute)
-        
-        //Router.handle(moduleRoute: MessageRoute.chatUser)
-        Router.handle(route: "native://user/info")
+        XCTAssertFalse(Router.handle(route: "native://user/info?id=10086"))
     }
 }

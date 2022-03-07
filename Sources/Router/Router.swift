@@ -10,8 +10,8 @@ public extension Router {
     private static var routes: RouteMapping<MappingInfo.Route> = .init()
     private static var actions: RouteMapping<MappingInfo.Action> = .init()
     
-    static func load(routeInfo: MappingInfo...) {
-        for (_routes, _actions) in routeInfo.map({ $0.convert() }) {
+    static func load(mappingInfo: MappingInfo...) {
+        for (_routes, _actions) in mappingInfo.map({ $0.convert() }) {
             self.routes.merge(values: _routes)
             self.actions.merge(values: _actions)
         }
@@ -142,10 +142,14 @@ public extension Router {
         if let route = self.routes[routeInfo.routeKey],
            let controller = self.provider.makeController(type: route.target)
         {
-            if routeInfo.params.keys.filter({ route.requiredInfo.params.contains($0) }).isEmpty {
-                let requiredInfo = route.requiredInfo.description
-                throw RouteError.missingParams(routeInfo.description + ", " + requiredInfo)
+            let diffable = route.requiredInfo.diffable(from: routeInfo.params.keys.map({ $0 }))
+            if !diffable.isEmpty {
+                throw RouteError.missingParams(diffable + ",\n" + routeInfo.description + ", \n" + route.requiredInfo.description)
             }
+            
+            controller.willStartMapping()
+            controller.mapping(params: routeInfo.params)
+            controller.didFinishMapping()
             return self.provider.transition(controller: controller, transition: routeInfo.transition)
         }
         return false

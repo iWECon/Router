@@ -45,7 +45,7 @@ extension MappingInfo {
     struct Route: CustomStringConvertible {
         
         struct RequiredInfo: CustomStringConvertible {
-            var params: Set<String> = []
+            var params: [Set<String>] = []
             
             init(_ path: String) {
                 guard let query = path.components(separatedBy: "?").last,
@@ -61,21 +61,30 @@ extension MappingInfo {
                     
                     let result = item[start...end]
                     guard result.hasPrefix("*") else {
-                        return
+                        continue
                     }
                     
                     let params = result.replacingOccurrences(of: "*", with: "").components(separatedBy: "/")
-                    for param in params {
-                        self.params.insert(param)
+                    self.params.append(Set<String>(params))
+                }
+            }
+            
+            func diffable(from keyNames: [String]) -> String {
+                var noContains: [[String]] = []
+                
+                for param in params {
+                    if param.filter({ keyNames.contains($0) }).isEmpty {
+                        noContains.append(Array(param))
                     }
                 }
+                return noContains.map({ $0.map({ "`\($0)`" }).joined(separator: " or ") }).joined(separator: " and ")
             }
             
             var description: String {
                 if params.isEmpty {
                     return "Requried: None"
                 }
-                return "Required: \(params.map({ "`\($0)`" }).joined(separator: " or ")) "
+                return "Required: \(params.compactMap({ $0.map({ "`\($0)`" }).joined(separator: " or ") }).joined(separator: " and\n")) "
             }
         }
         
