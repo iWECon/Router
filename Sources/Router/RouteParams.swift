@@ -9,7 +9,23 @@ protocol _RouteParamsMapping {
 
 /// When Route initializes a controller, it maps params to params marked as @RouteParams in the controller.
 ///
-/// Example:
+/// The type of support has: String(?), Int(?), Int32(?), Int64(?), Float(?), Double(?), CGFloat(?), Bool(?)
+///
+/// You can also customize mappings.
+///
+/// Customize example:
+///
+/// ```swift
+///final class UserController: UIViewController {
+///     // Set `userName` when route params.keys contains any one(`name` or `nickname`)
+///     @RouteParams("name", "nickname", mapping: { value in
+///         Date(timeIntervalSince1970: (value as NSString).doubleValue)
+///     }) var userName: Date = Date()
+/// }
+/// ```
+///
+/// Use example:
+///
 /// ```swift
 /// final class UserController: UIViewController {
 ///     // Set `userName` when route params.keys contains any one(`name` or `nickname`)

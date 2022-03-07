@@ -58,6 +58,18 @@ extension UIViewController: _UIViewControllerRouteMapping {
         } else if let rp = cast as? RouteParams<Int?> {
             rp.value = nsValue.integerValue
             
+            // MARK: Int32
+        } else if let rp = cast as? RouteParams<Int32> {
+            rp.value = nsValue.intValue
+        } else if let rp = cast as? RouteParams<Int32?> {
+            rp.value = nsValue.intValue
+            
+            // MARK: Int64
+        } else if let rp = cast as? RouteParams<Int64> {
+            rp.value = Int64(nsValue.integerValue)
+        } else if let rp = cast as? RouteParams<Int64?> {
+            rp.value = Int64(nsValue.integerValue)
+            
             // MARK: Float
         } else if let rp = cast as? RouteParams<Float> {
             rp.value = nsValue.floatValue
@@ -81,12 +93,6 @@ extension UIViewController: _UIViewControllerRouteMapping {
             rp.value = nsValue.boolValue
         } else if let rp = cast as? RouteParams<Bool?> {
             rp.value = nsValue.boolValue
-            
-            // MARK: Int32
-        } else if let rp = cast as? RouteParams<Int32> {
-            rp.value = nsValue.intValue
-        } else if let rp = cast as? RouteParams<Int32?> {
-            rp.value = nsValue.intValue
         }
     }
 }

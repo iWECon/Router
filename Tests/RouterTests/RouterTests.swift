@@ -40,3 +40,11 @@ final class RouterTests: XCTestCase {
         XCTAssertFalse(Router.handle(route: "native://user/info?id=10086"))
     }
 }
+
+
+final class UserController: UIViewController {
+     // Set `userName` when route params.keys contains any one(`name` or `nickname`)
+     @RouteParams("name", "nickname", mapping: { value in
+         Date(timeIntervalSince1970: (value as NSString).doubleValue)
+     }) var userName: Date = Date()
+ }
