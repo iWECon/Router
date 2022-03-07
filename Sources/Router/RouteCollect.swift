@@ -1,6 +1,6 @@
 import Foundation
 
-struct RouteMapping<T> {
+struct RouteCollect<T> {
     
     private var map: [String: T]
     

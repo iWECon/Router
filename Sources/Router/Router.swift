@@ -7,8 +7,8 @@ public struct Router {
 }
 
 public extension Router {
-    private static var routes: RouteMapping<MappingInfo.Route> = .init()
-    private static var actions: RouteMapping<MappingInfo.Action> = .init()
+    private static var routes: RouteCollect<MappingInfo.Route> = .init()
+    private static var actions: RouteCollect<MappingInfo.Action> = .init()
     
     static func load(mappingInfo: MappingInfo...) {
         for (_routes, _actions) in mappingInfo.map({ $0.convert() }) {
