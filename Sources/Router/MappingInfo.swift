@@ -22,7 +22,7 @@ public struct MappingInfo {
         
         for map in maps {
             switch map {
-            case let .route(path, target, remark):
+            case let .route(path, target):
                 let _key: String
                 if let index = path.firstIndex(of: "?") {
                     let endIndex = path.index(index, offsetBy: -1)
@@ -30,11 +30,11 @@ public struct MappingInfo {
                 } else {
                     _key = group + path
                 }
-                _routes[_key] = MappingInfo.Route(target: target, requiredInfo: Route.RequiredInfo(path), remark: remark)
+                _routes[_key] = MappingInfo.Route(target: target, requiredInfo: Route.RequiredInfo(path))
                 
-            case let .action(path, target, remark):
+            case let .action(path, target):
                 let _key = group + path
-                _actions[_key] = MappingInfo.Action(target: target, remark: remark)
+                _actions[_key] = MappingInfo.Action(target: target)
             }
         }
         
@@ -93,19 +93,17 @@ extension MappingInfo {
         
         var target: UIViewController.Type
         var requiredInfo: RequiredInfo
-        var remark: String?
         
         var description: String {
-            "Route { target: \(target), \(requiredInfo), remark: \(remark ?? "NONE") } "
+            "Route { target: \(target), \(requiredInfo) } "
         }
     }
     
     struct Action: CustomStringConvertible {
         var target: RouteAction.Type
-        var remark: String?
         
         var description: String {
-            "Action { target: \(target), remark: \(remark ?? "NONE") } "
+            "Action { target: \(target) } "
         }
     }
 }

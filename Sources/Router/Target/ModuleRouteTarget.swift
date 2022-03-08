@@ -5,7 +5,7 @@ import UIKit
 ///
 /// Contains two cases:
 ///
-/// * executable something without UIViewController
+/// * execute something without UIViewController
 ///
 /// ```swift
 /// case action(_ routeAction: RouteAction.Type, params: [String: Any]?)
@@ -19,8 +19,8 @@ import UIKit
 ///
 public enum ModuleRouteTarget: CustomStringConvertible {
     
-    /// executable something without UIViewController
-    case action(_ routeAction: RouteAction.Type, params: [String: Any]?)
+    /// execute something without UIViewController
+    case action(_ routeAction: RouteAction.Type, params: [String: Any]? = nil)
     
     /// show a UIViewController
     case controller(_ controller: UIViewController, transition: RouteTransition = .push)
@@ -29,6 +29,7 @@ public enum ModuleRouteTarget: CustomStringConvertible {
         switch self {
         case .action(let action, let params):
             return " ModuleRouteTarget { action: \(action), params: \(params?.description ?? "NONE") }"
+            
         case .controller(let controller, let transition):
             return " ModuleRouteTarget { controller: \(String(describing: controller.self)) with transition: \(transition) }"
         }

@@ -106,6 +106,7 @@ public extension Router {
     
     @discardableResult static func handle(route: String, transition: RouteTransition = .push) -> Bool {
         do {
+            self.provider.willStart(route)
             return try handleRouteString(route, transition: transition)
         } catch {
             guard let routeError = error as? RouteError else {

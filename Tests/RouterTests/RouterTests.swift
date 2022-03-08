@@ -12,39 +12,39 @@ enum MessageRoute: ModuleRoute {
     }
 }
 
-final class CController: UIViewController {
+final class UserController: UIViewController {
     
     @RouteParams("id", "userId") var userId: String = ""
-    @RouteParams("name", "nickname") var nickname: String = ""
-    @RouteParams("isSingle", "single") var isSingle: Bool = false
-    
-    @RouteParams("t", "birthdayTimestamp", mapping: { value in
-        (value as NSString).doubleValue
-    }) var birthdayTimestamp: TimeInterval = 0
-    
     override func didFinishMapping() {
-        print("finish mapping: \(userId), \(nickname), \(isSingle), \(birthdayTimestamp)")
+        print("finish mapping with userId: \(userId)")
     }
 }
 
+struct BaseActions: RouteAction {
+    static func routeAction(_ params: [String: Any]) -> Bool {
+        return true
+    }
+}
 
 final class RouterTests: XCTestCase {
     
     func testExample() throws {
         
         let userMapping = MappingInfo(group: "user", maps: [
-            .route("/info?{*id/userId}&{*name/nickname}&{*age}", target: CController.self, remark: "user info")
+            .route("/info?{*id/userId}", target: UserController.self),
+            
+            // actions
+            .action("/updateResources", target: BaseActions.self)
         ])
         Router.load(mappingInfo: userMapping)
         
-        XCTAssertFalse(Router.handle(route: "native://user/info?id=10086"))
+        XCTAssertTrue(Router.handle(route: "native://user/info?id=10086"))
+        XCTAssertTrue(Router.handle(route: "native://user/info?userId=10089"))
+        
+        // missing required params id or userId
+        XCTAssertFalse(Router.handle(route: "native://user/info"))
+        
+        XCTAssertTrue(Router.handle(route: "native://user/updateResources"))
     }
 }
 
-
-final class UserController: UIViewController {
-     // Set `userName` when route params.keys contains any one(`name` or `nickname`)
-     @RouteParams("name", "nickname", mapping: { value in
-         Date(timeIntervalSince1970: (value as NSString).doubleValue)
-     }) var userName: Date = Date()
- }

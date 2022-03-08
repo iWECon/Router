@@ -7,8 +7,17 @@ public struct DefaultRouteProvider: RouteProvider {
     }
     
     public func transition(controller: UIViewController, transition: RouteTransition) -> Bool {
-        //fatalError("should be implemented")
-        true
+        assert({ print("You should implement RouteProvider"); return true }())
+        
+        switch transition {
+        case .push:
+            // do push action
+            return true
+            
+        case .presented:
+            // do presented action
+            return true
+        }
     }
     
 }
