@@ -3,7 +3,20 @@
 A powerful route for Swift.
 
 
-## Register
+# Features
+
+* Support String route.
+
+* Support tips requried params.
+
+* Support inner route in project.
+
+* Support load remote route.
+
+* Auto reflecting params to UIViewController instance.
+
+
+# Register
 
 ```swift
 let userMapping = MappingInfo(group: "user", maps: [
