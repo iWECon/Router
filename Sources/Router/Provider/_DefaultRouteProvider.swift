@@ -1,12 +1,12 @@
 import UIKit
 
-public struct DefaultRouteProvider: RouteProvider {
+struct _DefaultRouteProvider: RouteProvider {
     
-    public func check(_ routeInfo: RouteInfo) -> Bool {
+    func check(_ routeInfo: RouteInfo) -> Bool {
         true
     }
     
-    public func transition(controller: UIViewController, transition: RouteTransition) -> Bool {
+    func transition(controller: UIViewController, transition: RouteTransition) -> Bool {
         assert({ print("You should implement RouteProvider"); return true }())
         
         switch transition {

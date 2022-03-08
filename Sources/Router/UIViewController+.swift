@@ -3,21 +3,21 @@ import UIKit
 /// Mapping params to controller instance
 @objc public protocol _UIViewControllerRouteMapping {
     /// Will start mapping
-    @objc func willStartMapping()
+    @objc func routeWillStartMapping()
     
     /// Mapping, you can override in controller instance and call super.mapping(params:)
-    @objc func mapping(params: [String: String])
+    @objc func routeMapping(params: [String: String])
     
     /// Did finish mapping
-    @objc func didFinishMapping()
+    @objc func routeDidFinishMapping()
 }
 
 // Default implemention
 extension UIViewController: _UIViewControllerRouteMapping {
-    public func willStartMapping() { }
-    public func didFinishMapping() { }
+    public func routeWillStartMapping() { }
+    public func routeDidFinishMapping() { }
     
-    public func mapping(params: [String : String]) {
+    public func routeMapping(params: [String : String]) {
         let mirror = Mirror(reflecting: self)
         for (_, value) in mirror.children {
             guard let aliasName = (value as? _RouteParams)?.aliasNames,

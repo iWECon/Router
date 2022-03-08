@@ -72,8 +72,6 @@ extension ModuleRoute {
 public extension Router {
     
     @discardableResult static func handle(moduleRoute: ModuleRoute) -> Bool {
-        self.provider.willStart(moduleRoute)
-        
         switch moduleRoute.target {
         case .controller(let controller, let transition):
             return self.provider.transition(controller: controller, transition: transition)

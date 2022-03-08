@@ -15,7 +15,8 @@ enum MessageRoute: ModuleRoute {
 final class UserController: UIViewController {
     
     @RouteParams("id", "userId") var userId: String = ""
-    override func didFinishMapping() {
+    
+    override func routeDidFinishMapping() {
         print("finish mapping with userId: \(userId)")
     }
 }

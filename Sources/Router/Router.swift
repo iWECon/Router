@@ -3,13 +3,18 @@ import UIKit
 public struct Router {
     private init() { }
     
-    public static var provider: RouteProvider = DefaultRouteProvider()
+    public static var provider: RouteProvider = _DefaultRouteProvider()
 }
 
 public extension Router {
-    private static var routes: RouteCollect<MappingInfo.Route> = .init()
-    private static var actions: RouteCollect<MappingInfo.Action> = .init()
+    /// Cached all routes.
+    private static var routes: RouteCollect<MappingInfo.Route> = RouteCollect()
     
+    /// Cached all actions.
+    private static var actions: RouteCollect<MappingInfo.Action> = RouteCollect()
+    
+    /// Load mapping info
+    /// - Parameter mappingInfo: MappingInfo...
     static func load(mappingInfo: MappingInfo...) {
         for (_routes, _actions) in mappingInfo.map({ $0.convert() }) {
             self.routes.merge(values: _routes)
@@ -17,86 +22,35 @@ public extension Router {
         }
     }
     
-    /// Load route mapping from json
-    /// - Parameter mapping: route mapping json
-    static func load(mapping: [[String: Any]]) {
-
-//        var _actions: [String: RouteInfo.Action] = [:]
-//        var _routes: [String: RouteInfo.Route] = [:]
-//        var _rewrites: [String: RouteInfo.Rewrite] = [:]
-//
-//        for mapp in mapping {
-//            guard let type = mapp["type"] as? String, !type.isEmpty else {
-//                continue
-//            }
-//
-//            guard let map = mapp["info"] as? [String: Any],
-//                  let mapPath = map["path"] as? String, !mapPath.isEmpty,
-//                  let mapTarget = map["target"] as? String, !mapTarget.isEmpty,
-//                  let mapRemark = map["remark"] as? String, !mapRemark.isEmpty
-//            else {
-//                continue
-//            }
-//
-//            guard let targetClazz = NSClassFromString(mapTarget) else {
-//                continue
-//            }
-//
-//            let mapParams = map["params"] as? String
-//
-//            var versionRange: ClosedRange<Int>?
-//            if let versionRangeInfo = map["versionRange"] as? String, versionRangeInfo.contains("...") {
-//                let _info = versionRangeInfo.components(separatedBy: "...")
-//                if let lowerBoundsInfo = _info.first, let upperBoundsInfo = _info.last,
-//                   let lowerBounds = Int(lowerBoundsInfo), let upperBounds = Int(upperBoundsInfo) {
-//                    versionRange = lowerBounds ... upperBounds
-//                }
-//            }
-//
-//            guard let filter = RouterManager.shared.provider.remoteRouteFilter?(type, mapPath, mapTarget, mapParams, mapRemark, versionRange),
-//                  !filter
-//            else {
-//                continue
-//            }
-//
-//            switch type {
-//            case "action":
-//                if let ra = targetClazz as? RouteAction.Type {
-//                    let action = RouteInfo.Action(target: ra, remark: mapRemark)
-//                    _actions[mapPath] = action
-//                }
-//            case "route":
-//                if let rt = targetClazz as? UIViewController.Type {
-//                    let route = RouteInfo.Route(target: rt, remark: mapRemark)
-//                    _routes[mapPath] = route
-//                }
-//            case "rewrite":
-//                guard let rw = targetClazz as? RouteTarget.Type else {
-//                    continue
-//                }
-//                if let rcch = rw as? RouteCustomControllerHandler.Type {
-//                    let rewrite = RouteInfo.Rewrite(target: rcch, remark: mapRemark)
-//                    _rewrites[mapPath] = rewrite
-//                    continue
-//                }
-//                if let ra = rw as? RouteAction.Type {
-//                    let ra = RouteInfo.Rewrite(target: ra, remark: mapRemark)
-//                    _rewrites[mapPath] = ra
-//                    continue
-//                }
-//                if let c = rw as? UIViewController.Type {
-//                    let c = RouteInfo.Rewrite(target: c, remark: mapRemark)
-//                    _rewrites[mapPath] = c
-//                    continue
-//                }
-//            default:
-//                continue
-//            }
-//        }
-//
-//        self.actions.merge(values: _actions)
-//        self.routes.merge(values: _routes)
-//        self.rewrites.merge(values: _rewrites)
+    /// Load route mapping
+    /// - Parameter routeRemote: RouteRemote use Codable initlized.
+    static func load(routeRemote: RouteRemote) {
+        var _routes: [String: MappingInfo.Route] = [:]
+        var _actions: [String: MappingInfo.Action] = [:]
+        
+        for route in routeRemote.routes {
+            guard let clazzName = NSClassFromString(route.targetName),
+                  let vcTarget = clazzName as? UIViewController.Type
+            else {
+                continue
+            }
+            let key = route.group + route.path
+            _routes[key] = MappingInfo.Route(target: vcTarget, requiredInfo: MappingInfo.Route.RequiredInfo(route.path))
+        }
+        
+        for action in routeRemote.actions {
+            guard let clazzName = NSClassFromString(action.targetName),
+                  let actionTarget = clazzName as? RouteAction.Type
+            else {
+                continue
+            }
+            
+            let key = action.group + action.path
+            _actions[key] = MappingInfo.Action(target: actionTarget)
+        }
+        
+        self.routes.merge(values: _routes)
+        self.actions.merge(values: _actions)
     }
     
 }
@@ -106,7 +60,6 @@ public extension Router {
     
     @discardableResult static func handle(route: String, transition: RouteTransition = .push) -> Bool {
         do {
-            self.provider.willStart(route)
             return try handleRouteString(route, transition: transition)
         } catch {
             guard let routeError = error as? RouteError else {
@@ -148,9 +101,9 @@ public extension Router {
                 throw RouteError.missingParams(diffable + ",\n" + routeInfo.description + ", \n" + route.requiredInfo.description)
             }
             
-            controller.willStartMapping()
-            controller.mapping(params: routeInfo.params)
-            controller.didFinishMapping()
+            controller.routeWillStartMapping()
+            controller.routeMapping(params: routeInfo.params)
+            controller.routeDidFinishMapping()
             return self.provider.transition(controller: controller, transition: routeInfo.transition)
         }
         return false
