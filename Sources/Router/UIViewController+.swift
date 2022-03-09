@@ -20,8 +20,8 @@ extension UIViewController: _UIViewControllerRouteMapping {
     public func routeMapping(params: [String : String]) {
         let mirror = Mirror(reflecting: self)
         for (_, value) in mirror.children {
-            guard let aliasName = (value as? _RouteParams)?.aliasNames,
-                  let mapping = value as? _RouteParamsMapping
+            guard let aliasName: [String] = (value as? _RouteParams)?.aliasNames,
+                  let mapping: _RouteParamsMapping = value as? _RouteParamsMapping
             else {
                 continue
             }

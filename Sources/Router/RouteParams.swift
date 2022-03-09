@@ -17,10 +17,10 @@ protocol _RouteParamsMapping {
 ///
 /// ```swift
 ///final class UserController: UIViewController {
-///     // Set `userName` when route params.keys contains any one(`name` or `nickname`)
-///     @RouteParams("name", "nickname", mapping: { value in
+///     // Set `userName` when route params.keys contains anyone(`t` or `birthday`)
+///     @RouteParams("t", "birthday", mapping: { value in
 ///         Date(timeIntervalSince1970: (value as NSString).doubleValue)
-///     }) var userName: Date = Date()
+///     }) var birthday: Date = Date()
 /// }
 /// ```
 ///
@@ -28,7 +28,7 @@ protocol _RouteParamsMapping {
 ///
 /// ```swift
 /// final class UserController: UIViewController {
-///     // Set `userName` when route params.keys contains any one(`name` or `nickname`)
+///     // Set `userName` when route params.keys contains anyone(`name` or `nickname`)
 ///     @RouteParams("name", "nickname") var userName: String = ""
 /// }
 ///
