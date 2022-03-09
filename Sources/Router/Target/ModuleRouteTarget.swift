@@ -23,7 +23,7 @@ public enum ModuleRouteTarget: CustomStringConvertible {
     case action(_ routeAction: RouteAction.Type, params: [String: Any]? = nil)
     
     /// show a UIViewController
-    case controller(_ controller: UIViewController, transition: RouteTransition = .push)
+    case controller(_ controller: UIViewController, transition: RouteTransition = .push())
     
     public var description: String {
         switch self {

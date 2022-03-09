@@ -16,7 +16,7 @@ final class UserController: UIViewController {
     
     @RouteParams("id", "userId") var userId: String = ""
     
-    override func routeDidFinishMapping() {
+    override func routeParamsMappingDidFinish() {
         print("finish mapping with userId: \(userId)")
     }
 }

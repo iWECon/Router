@@ -1,23 +1,11 @@
 import UIKit
 
-/// Mapping params to controller instance
-@objc public protocol _UIViewControllerRouteMapping {
-    /// Will start mapping
-    @objc func routeWillStartMapping()
-    
-    /// Mapping, you can override in controller instance and call super.mapping(params:)
-    @objc func routeMapping(params: [String: String])
-    
-    /// Did finish mapping
-    @objc func routeDidFinishMapping()
-}
-
 // Default implemention
-extension UIViewController: _UIViewControllerRouteMapping {
-    public func routeWillStartMapping() { }
-    public func routeDidFinishMapping() { }
+extension UIViewController: _UIViewControllerRouteParamsMapping {
+    open func routeParamsMappingWillStart() { }
+    open func routeParamsMappingDidFinish() { }
     
-    public func routeMapping(params: [String : String]) {
+    open func routeParamsMappingProcess(_ params: [String : String]) {
         let mirror = Mirror(reflecting: self)
         for (_, value) in mirror.children {
             guard let aliasName: [String] = (value as? _RouteParams)?.aliasNames,
@@ -41,6 +29,9 @@ extension UIViewController: _UIViewControllerRouteMapping {
             }
         }
     }
+}
+
+extension UIViewController {
     
     // MARK: Built-in mapping
     private func builtInMapping(cast: Any, value: String) {
@@ -95,4 +86,5 @@ extension UIViewController: _UIViewControllerRouteMapping {
             rp.value = nsValue.boolValue
         }
     }
+    
 }

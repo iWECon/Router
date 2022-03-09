@@ -6,6 +6,7 @@ public struct Router {
     public static var provider: RouteProvider = _DefaultRouteProvider()
 }
 
+// MARK: - load mapping
 public extension Router {
     /// Cached all routes.
     private static var routes: RouteCollect<MappingInfo.Route> = RouteCollect()
@@ -58,7 +59,7 @@ public extension Router {
 // MARK: - Handle
 public extension Router {
     
-    @discardableResult static func handle(route: String, transition: RouteTransition = .push) -> Bool {
+    @discardableResult static func handle(route: String, transition: RouteTransition = .push()) -> Bool {
         do {
             return try handleRouteString(route, transition: transition)
         } catch {
@@ -101,9 +102,10 @@ public extension Router {
                 throw RouteError.missingParams(diffable + ",\n" + routeInfo.description + ", \n" + route.requiredInfo.description)
             }
             
-            controller.routeWillStartMapping()
-            controller.routeMapping(params: routeInfo.params)
-            controller.routeDidFinishMapping()
+            controller.routeParamsMappingWillStart()
+            controller.routeParamsMappingProcess(routeInfo.params)
+            controller.routeParamsMappingDidFinish()
+            
             return self.provider.transition(controller: controller, transition: routeInfo.transition)
         }
         return false

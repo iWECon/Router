@@ -15,6 +15,9 @@ public protocol RouteProvider {
     /// Error catch when route handle happend error.
     func errorCatch(_ error: RouteError)
     
+    
+    func back(_ back: RouterBack, animated: Bool, defer: (() -> Void)?) -> Bool
+    
     /// Make a UIViewController with UIViewController.Type.
     /// - Returns: return a valid controller, return nil if can't create controller with type.
     func makeController(type: UIViewController.Type) -> UIViewController?
@@ -46,6 +49,10 @@ extension RouteProvider {
     
     public func isWebRoute(_ routeInfo: RouteInfo) -> Bool {
         ["http", "https"].contains(routeInfo.scheme)
+    }
+    
+    public func back(_ back: RouterBack, animated: Bool, defer: (() -> Void)?) -> Bool {
+        true
     }
     
 }

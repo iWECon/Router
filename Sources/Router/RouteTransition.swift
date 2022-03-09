@@ -1,6 +1,6 @@
 import Foundation
 
 public enum RouteTransition {
-    case push
-    case presented
+    case push(animated: Bool = true)
+    case presented(animated: Bool = true, completion: (() -> Void)? = nil)
 }
