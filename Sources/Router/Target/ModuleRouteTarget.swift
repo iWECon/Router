@@ -71,8 +71,8 @@ extension ModuleRoute {
 // MARK: - Handle
 public extension Router {
     
-    @discardableResult static func handle(moduleRoute: ModuleRoute) -> Bool {
-        switch moduleRoute.target {
+    @discardableResult static func navigate(to destination: ModuleRoute) -> Bool {
+        switch destination.target {
         case .controller(let controller, let transition):
             return self.provider.transition(controller: controller, transition: transition)
             

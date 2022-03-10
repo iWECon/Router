@@ -7,7 +7,7 @@ enum MessageRoute: ModuleRoute {
     var target: ModuleRouteTarget {
         switch self {
         case .chatUser:
-            return .controller(UIViewController(), transition: .push)
+            return .controller(UIViewController(), transition: .push())
         }
     }
 }
@@ -46,6 +46,8 @@ final class RouterTests: XCTestCase {
         XCTAssertFalse(Router.handle(route: "native://user/info"))
         
         XCTAssertTrue(Router.handle(route: "native://user/updateResources"))
+        
+        Router.navigate(to: MessageRoute.chatUser)
     }
 }
 

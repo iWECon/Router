@@ -1,13 +1,12 @@
 import Foundation
 
-public struct RouteRemote: Codable {
-    
-    public struct Info: Codable {
-        public let group: String
-        public let path: String
-        public let targetName: String
-    }
-    
-    public let routes: [Info]
-    public let actions: [Info]
+public protocol RouteRemoteInfoProvider {
+    var group: String { get set }
+    var path: String { get set }
+    var targetName: String { get set }
+}
+
+public protocol RouteRemoteProvider {
+    var routes: [RouteRemoteInfoProvider] { get set }
+    var actions: [RouteRemoteInfoProvider] { get set }
 }

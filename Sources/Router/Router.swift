@@ -14,6 +14,17 @@ public extension Router {
     /// Cached all actions.
     private static var actions: RouteCollect<MappingInfo.Action> = RouteCollect()
     
+    static var description: String {
+        var tmp: String = ""
+        if !routes.isEmpty {
+            tmp += "\(routes)\n"
+        }
+        if !actions.isEmpty {
+            tmp += "\(actions)"
+        }
+        return tmp
+    }
+    
     /// Load mapping info
     /// - Parameter mappingInfo: MappingInfo...
     static func load(mappingInfo: MappingInfo...) {
@@ -25,11 +36,11 @@ public extension Router {
     
     /// Load route mapping
     /// - Parameter routeRemote: RouteRemote use Codable initlized.
-    static func load(routeRemote: RouteRemote) {
+    static func load(remote: RouteRemoteProvider) {
         var _routes: [String: MappingInfo.Route] = [:]
         var _actions: [String: MappingInfo.Action] = [:]
         
-        for route in routeRemote.routes {
+        for route in remote.routes {
             guard let clazzName = NSClassFromString(route.targetName),
                   let vcTarget = clazzName as? UIViewController.Type
             else {
@@ -39,7 +50,7 @@ public extension Router {
             _routes[key] = MappingInfo.Route(target: vcTarget, requiredInfo: MappingInfo.Route.RequiredInfo(route.path))
         }
         
-        for action in routeRemote.actions {
+        for action in remote.actions {
             guard let clazzName = NSClassFromString(action.targetName),
                   let actionTarget = clazzName as? RouteAction.Type
             else {
@@ -131,8 +142,20 @@ public extension Router {
             throw RouteError.parseFailure("not found path from: \(route)")
         }
         
-        let queries = routeComponents.queryItems?.filter({ $0.value != nil })
-            .map({ [$0.name: $0.value!] }) ?? []
+        let queries = (routeComponents.queryItems ?? [])
+            .compactMap { queryItem -> (String, String)? in
+                guard let value = queryItem.value,
+                      !value.isEmpty,
+                      let removingPercentValue = value.removingPercentEncoding,
+                      !removingPercentValue.isEmpty
+                else {
+                    return nil
+                }
+                return (queryItem.name, removingPercentValue)
+            }
+            .map { value in
+                [value.0: value.1]
+            }
         
         var queriesMerged = queries.first ?? [:]
         queries.forEach { value in

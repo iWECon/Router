@@ -1,6 +1,6 @@
 import Foundation
 
-struct RouteCollect<T> {
+struct RouteCollect<T>: CustomStringConvertible {
     
     private var map: [String: T]
     
@@ -20,6 +20,14 @@ struct RouteCollect<T> {
             return self.map["/" + key]
         }
         return nil
+    }
+    
+    var isEmpty: Bool {
+        map.isEmpty
+    }
+    
+    var description: String {
+        "\(T.self)(s):\n\(map)"
     }
 }
 
