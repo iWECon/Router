@@ -88,7 +88,7 @@ public extension Router {
             throw RouteError.empty
         }
         
-        let routeInfo = try self.provider.parseRoute(route) ?? parseRoute(route, transition: transition)
+        let routeInfo = try self.provider.parseRoute(route, transition: transition) ?? parseRoute(route, transition: transition)
         guard self.provider.processible(routeInfo) else {
             throw RouteError.providerReject("`processible` return false")
         }
