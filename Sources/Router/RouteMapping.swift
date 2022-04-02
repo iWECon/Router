@@ -30,11 +30,17 @@ public struct RouteMapping {
                 } else {
                     _key = group + path
                 }
-                _routes[_key] = RouteMapping.Route(target: target, requiredInfo: Route.RequiredInfo(path))
+                _routes[_key.lowercased()] = RouteMapping.Route(target: target, requiredInfo: RequiredInfo(path))
                 
             case let .action(path, target):
-                let _key = group + path
-                _actions[_key] = RouteMapping.Action(target: target)
+                let _key: String
+                if let index = path.firstIndex(of: "?") {
+                    let endIndex = path.index(index, offsetBy: -1)
+                    _key = group + path[...endIndex]
+                } else {
+                    _key = group + path
+                }
+                _actions[_key.lowercased()] = RouteMapping.Action(target: target, requiredInfo: RequiredInfo(path))
             }
         }
         
@@ -46,51 +52,6 @@ public struct RouteMapping {
 extension RouteMapping {
     
     struct Route: CustomStringConvertible {
-        
-        struct RequiredInfo: CustomStringConvertible {
-            var params: [Set<String>] = []
-            
-            init(_ path: String) {
-                guard let query = path.components(separatedBy: "?").last,
-                      !query.isEmpty
-                else {
-                    return
-                }
-                
-                for item in query.components(separatedBy: "&") {
-                    let item = item.replacingOccurrences(of: " ", with: "")
-                    let start = item.index(item.startIndex, offsetBy: 1)
-                    let end = item.index(item.endIndex, offsetBy: -2)
-                    
-                    let result = item[start...end]
-                    guard result.hasPrefix("*") else {
-                        continue
-                    }
-                    
-                    let params = result.replacingOccurrences(of: "*", with: "").components(separatedBy: "/")
-                    self.params.append(Set<String>(params))
-                }
-            }
-            
-            func diffable(from keyNames: [String]) -> String {
-                var noContains: [[String]] = []
-                
-                for param in params {
-                    if param.filter({ keyNames.contains($0) }).isEmpty {
-                        noContains.append(Array(param))
-                    }
-                }
-                return noContains.map({ $0.map({ "`\($0)`" }).joined(separator: " or ") }).joined(separator: " and ")
-            }
-            
-            var description: String {
-                if params.isEmpty {
-                    return "Requried: None"
-                }
-                return "Required: \(params.compactMap({ $0.map({ "`\($0)`" }).joined(separator: " or ") }).joined(separator: " and\n")) "
-            }
-        }
-        
         var target: UIViewController.Type
         var requiredInfo: RequiredInfo
         
@@ -101,9 +62,55 @@ extension RouteMapping {
     
     struct Action: CustomStringConvertible {
         var target: RouteAction.Type
+        var requiredInfo: RequiredInfo
         
         var description: String {
-            "Action { target: \(target) } "
+            "Action { target: \(target), \(requiredInfo) } "
         }
     }
+    
+    struct RequiredInfo: CustomStringConvertible {
+        var params: [Set<String>] = []
+        
+        init(_ path: String) {
+            guard let query = path.components(separatedBy: "?").last,
+                  !query.isEmpty
+            else {
+                return
+            }
+            
+            for item in query.components(separatedBy: "&") {
+                let item = item.replacingOccurrences(of: " ", with: "")
+                let start = item.index(item.startIndex, offsetBy: 1)
+                let end = item.index(item.endIndex, offsetBy: -2)
+                
+                let result = item[start...end]
+                guard result.hasPrefix("*") else {
+                    continue
+                }
+                
+                let params = result.replacingOccurrences(of: "*", with: "").components(separatedBy: "/")
+                self.params.append(Set<String>(params))
+            }
+        }
+        
+        func diffable(from keyNames: [String]) -> String {
+            var noContains: [[String]] = []
+            
+            for param in params {
+                if param.filter({ keyNames.contains($0) }).isEmpty {
+                    noContains.append(Array(param))
+                }
+            }
+            return noContains.map({ $0.map({ "`\($0)`" }).joined(separator: " or ") }).joined(separator: " and ")
+        }
+        
+        var description: String {
+            if params.isEmpty {
+                return "Requried: None"
+            }
+            return "Required: \(params.compactMap({ $0.map({ "`\($0)`" }).joined(separator: " or ") }).joined(separator: " and\n")) "
+        }
+    }
+    
 }

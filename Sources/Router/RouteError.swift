@@ -44,7 +44,7 @@ public enum RouteError: Error, LocalizedError {
             return "❌ Missing params: \(description)"
             
         case .notFound(let reason):
-            return "❌ Not found: \(reason)"
+            return "❌ Not found { \(reason) }"
             
         case .error(let error):
             return "❌ Custom error: \(error.localizedDescription)"

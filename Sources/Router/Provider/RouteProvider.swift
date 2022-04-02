@@ -20,7 +20,7 @@ public protocol RouteProvider {
     ///
     /// - Parameter route: route
     /// - Returns: newRoute or nil (nil means no conversion required).
-    func parseRoute(_ route: String) throws -> String?
+    func parseRoute(_ route: String) throws -> ParseInfo?
     
     func back(_ back: RouterBack, animated: Bool, defer: (() -> Void)?) -> Bool
     
@@ -41,7 +41,7 @@ public protocol RouteProvider {
 
 extension RouteProvider {
     
-    public func parseRoute(_ route: String) throws -> String? {
+    public func parseRoute(_ route: String) throws -> ParseInfo? {
         nil
     }
     

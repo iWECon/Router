@@ -47,7 +47,7 @@ public extension Router {
                 continue
             }
             let key = route.group + route.path
-            _routes[key] = RouteMapping.Route(target: vcTarget, requiredInfo: RouteMapping.Route.RequiredInfo(route.path))
+            _routes[key] = RouteMapping.Route(target: vcTarget, requiredInfo: RouteMapping.RequiredInfo(route.path))
         }
         
         for action in remote.actions {
@@ -58,7 +58,7 @@ public extension Router {
             }
             
             let key = action.group + action.path
-            _actions[key] = RouteMapping.Action(target: actionTarget)
+            _actions[key] = RouteMapping.Action(target: actionTarget, requiredInfo: RouteMapping.RequiredInfo(action.path))
         }
         
         self.routes.merge(values: _routes)
@@ -88,7 +88,7 @@ public extension Router {
             throw RouteError.empty
         }
         
-        let newRoute = try self.provider.parseRoute(route) ?? route
+        let newRoute = try self.provider.parseRoute(route)?._route ?? route
         let routeInfo = try self.parseRoute(newRoute, transition: transition)
         guard self.provider.processible(routeInfo) else {
             throw RouteError.providerReject("`processible` return false")
@@ -122,7 +122,7 @@ public extension Router {
             return self.provider.transition(controller: controller, transition: routeInfo.transition)
         }
         
-        throw RouteError.notFound("\(routeInfo.description)")
+        throw RouteError.notFound(newRoute)
     }
     
     // MARK: Parse route

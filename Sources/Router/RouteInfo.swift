@@ -19,20 +19,10 @@ public struct RouteInfo: CustomStringConvertible {
     }
     
     var routeKey: String {
-        group + path
+        (group + path).lowercased()
     }
     
     public var description: String {
-        """
-RouteInfo {
-    scheme: \(scheme),
-    group: \(group),
-    path: \(path),
-    params: \(params),
-    transition: \(transition),
-    -----------
-    originalRoute: \(originalRoute)
-}
-"""
+        "RouteInfo { \(scheme)://\(group)\(path), params: \(params) }"
     }
 }
