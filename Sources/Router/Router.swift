@@ -88,12 +88,12 @@ public extension Router {
         }
         
         let routeInfo = try parseRoute(route, transition: transition)
-        guard self.provider.check(routeInfo) else {
-            throw RouteError.providerCancel("`check` return false")
+        guard self.provider.processible(routeInfo) else {
+            throw RouteError.providerReject("`processible` return false")
         }
         
         // MARK: Web handle
-        if self.provider.isWebRoute(routeInfo),
+        if self.provider.isWebScheme(routeInfo),
            let webController = self.provider.webController(routeInfo)
         {
             return self.provider.transition(controller: webController, transition: routeInfo.transition)
@@ -110,7 +110,7 @@ public extension Router {
         {
             let diffable = route.requiredInfo.diffable(from: routeInfo.params.keys.map({ $0 }))
             if !diffable.isEmpty {
-                throw RouteError.missingParams(diffable + ",\n" + routeInfo.description + ", \n" + route.requiredInfo.description)
+                throw RouteError.missingParams(diffable + ",\n   " + routeInfo.description + ", \n   " + route.requiredInfo.description)
             }
             
             controller.routeParamsMappingWillStart()

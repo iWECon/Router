@@ -27,7 +27,7 @@ struct RouteCollect<T>: CustomStringConvertible {
     }
     
     var description: String {
-        "\(T.self)(s):\n\(map)"
+        "\(T.self)(s):\n\t\(map.map({ "\($0.key): \($0.value)" }).joined(separator: "\n\t"))"
     }
 }
 

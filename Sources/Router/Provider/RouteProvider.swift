@@ -3,9 +3,9 @@ import SafariServices
 
 public protocol RouteProvider {
     
-    /// Check routeInfo.scheme. Please add ["http", "https"] if you want pass web route.
-    /// - Returns: Bool
-    func check(_ routeInfo: RouteInfo) -> Bool
+    /// If check routeInfo.scheme. Please add ["http", "https"] if you want pass web route.
+    /// - Returns: return true to continue handle, return false to stop.
+    func processible(_ routeInfo: RouteInfo) -> Bool
     
     /// Transition to controller with RouteTransition (push or presented).
     /// - Returns: return true if successed else return false.
@@ -23,12 +23,14 @@ public protocol RouteProvider {
     func makeController(type: UIViewController.Type) -> UIViewController?
     
     /// Make web controller with RouteInfo.
+    /// If need set url, use routeInfo.originalRoute to set it.
+    ///
     /// - Returns: return a valid web controller, return nil if can't create web controller with RouteInfo.
     func webController(_ routeInfo: RouteInfo) -> UIViewController?
     
     /// Check if the route is web route.
     /// - Returns: return true if the route prefix contains "http" or "https" else return false.
-    func isWebRoute(_ routeInfo: RouteInfo) -> Bool
+    func isWebScheme(_ routeInfo: RouteInfo) -> Bool
 }
 
 extension RouteProvider {
@@ -47,7 +49,7 @@ extension RouteProvider {
         return SFSafariViewController(url: routeURL)
     }
     
-    public func isWebRoute(_ routeInfo: RouteInfo) -> Bool {
+    public func isWebScheme(_ routeInfo: RouteInfo) -> Bool {
         ["http", "https"].contains(routeInfo.scheme)
     }
     

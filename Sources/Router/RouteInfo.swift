@@ -2,12 +2,12 @@ import Foundation
 
 public struct RouteInfo: CustomStringConvertible {
     
-    public var scheme: String
-    public var group: String
-    public var path: String
-    public var params: [String: String]
-    public var transition: RouteTransition
-    public var originalRoute: String
+    public let scheme: String
+    public let group: String
+    public let path: String
+    public let params: [String: String]
+    public let transition: RouteTransition
+    public let originalRoute: String
     
     public init(scheme: String, group: String, path: String, params: [String : String], transition: RouteTransition, originalRoute: String) {
         self.scheme = scheme

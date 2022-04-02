@@ -15,8 +15,8 @@ public enum RouteError: Error, LocalizedError {
     /// usually thrown when scheme or host or path cannot be obtained from URLComponents
     case parseFailure(_ reason: String)
     
-    /// usually thrown when RouteProvider.check return false
-    case providerCancel(_ reason: String)
+    /// usually thrown when RouteProvider.pocessible return false
+    case providerReject(_ reason: String)
     
     /// usually thrown when route not contains required params
     case missingParams(_ description: String)
@@ -32,8 +32,8 @@ public enum RouteError: Error, LocalizedError {
         case .parseFailure(let reason):
             return "❌ Parse route failure: \(reason)"
             
-        case .providerCancel(let reason):
-            return "❌ Provider cancnel: \(reason)"
+        case .providerReject(let reason):
+            return "❌ Provider rejected: \(reason)"
             
         case .missingParams(let description):
             return "❌ Missing params: \(description)"

@@ -33,6 +33,7 @@ final class RouterTests: XCTestCase {
         
         let userMapping = MappingInfo(group: "user", maps: [
             .route("/info?{*id/userId}", target: UserController.self),
+            .route("/account?{*id/userId}", target: UIViewController.self),
             
             // actions
             .action("/updateResources", target: BaseActions.self)
@@ -48,6 +49,8 @@ final class RouterTests: XCTestCase {
         XCTAssertTrue(Router.handle(route: "native://user/updateResources"))
         
         Router.navigate(to: MessageRoute.chatUser)
+        
+        print(Router.description)
     }
 }
 
