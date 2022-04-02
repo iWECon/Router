@@ -6,7 +6,7 @@ import Foundation
 /// * Send messages
 /// * Update static resources (image, theme or other something)
 ///
-/// Define in MappingInfo
+/// Define in RouteMapping
 /// Example:
 /// ```swift
 /// struct BaseActions: RouteAction {
@@ -18,7 +18,7 @@ import Foundation
 ///     }
 /// }
 ///
-/// let actionsMapping = MappingInfo(group: "base", maps: [
+/// let actionsMapping = RouteMapping(group: "base", maps: [
 ///     // BaseActions should inherits the protocol `RouteAction`
 ///     .action("/updateResources", target: BaseActions.self, remark: "update resources")
 /// ])

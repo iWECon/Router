@@ -54,17 +54,29 @@ public enum ModuleRouteTarget: CustomStringConvertible {
 ///             return .controller(UserController(userId: userId), transition: .presented)
 ///         }
 ///     }
-/// }
+///
+///     func processible() -> Bool {
+///         switch self {
+///         case .info(let userId):
+///             return !userId.isEmpty
+///         }
+///     }
 /// ```
 public protocol ModuleRoute: RouteTarget, CustomStringConvertible {
     
     /// Target of route
     var target: ModuleRouteTarget { get }
+    
+    /// Return false to stop doing action (show controller or do some action)
+    func processible() -> Bool
 }
 
 extension ModuleRoute {
     public var description: String {
         target.description
+    }
+    public func processible() -> Bool {
+        true
     }
 }
 
@@ -74,10 +86,16 @@ public extension Router {
     @discardableResult static func navigate(to destination: ModuleRoute) -> Bool {
         switch destination.target {
         case .controller(let controller, let transition):
-            return self.provider.transition(controller: controller, transition: transition)
+            if destination.processible() {
+                return self.provider.transition(controller: controller, transition: transition)
+            }
+            return false
             
         case .action(let action, let params):
-            return action.routeAction(params ?? [:])
+            if destination.processible() {
+                return action.routeAction(params ?? [:])
+            }
+            return false
         }
     }
     

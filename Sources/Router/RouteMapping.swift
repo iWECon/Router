@@ -2,8 +2,8 @@ import UIKit
 
 /// Collect mappping info
 ///
-/// use `Router.load(mappingInfo: MappingInfo...) to load it`
-public struct MappingInfo {
+/// use `Router.load(mapping: RouteMapping...) to load it`
+public struct RouteMapping {
     public let group: String
     public let maps: [RouteMap]
     public init(group: String, maps: [RouteMap]) {
@@ -11,14 +11,14 @@ public struct MappingInfo {
         self.maps = maps
     }
     
-    /// Convert Mapping info to [String: MappingInfo>
+    /// Convert Mapping info to [String: RouteMapping>
     /// - Returns: (routes, actions)
     func convert() -> (
-        routes: [String: MappingInfo.Route],
-        actions: [String: MappingInfo.Action]
+        routes: [String: RouteMapping.Route],
+        actions: [String: RouteMapping.Action]
     ) {
-        var _routes: [String: MappingInfo.Route] = [:]
-        var _actions: [String: MappingInfo.Action] = [:]
+        var _routes: [String: RouteMapping.Route] = [:]
+        var _actions: [String: RouteMapping.Action] = [:]
         
         for map in maps {
             switch map {
@@ -30,11 +30,11 @@ public struct MappingInfo {
                 } else {
                     _key = group + path
                 }
-                _routes[_key] = MappingInfo.Route(target: target, requiredInfo: Route.RequiredInfo(path))
+                _routes[_key] = RouteMapping.Route(target: target, requiredInfo: Route.RequiredInfo(path))
                 
             case let .action(path, target):
                 let _key = group + path
-                _actions[_key] = MappingInfo.Action(target: target)
+                _actions[_key] = RouteMapping.Action(target: target)
             }
         }
         
@@ -43,7 +43,7 @@ public struct MappingInfo {
 }
 
 // MARK: - Infos
-extension MappingInfo {
+extension RouteMapping {
     
     struct Route: CustomStringConvertible {
         

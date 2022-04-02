@@ -21,6 +21,9 @@ public enum RouteError: Error, LocalizedError {
     /// usually thrown when route not contains required params
     case missingParams(_ description: String)
     
+    /// usually thrown when custom error
+    case error(Error)
+    
     public var errorDescription: String? {
         switch self {
         case .empty:
@@ -37,6 +40,9 @@ public enum RouteError: Error, LocalizedError {
             
         case .missingParams(let description):
             return "❌ Missing params: \(description)"
+            
+        case .error(let error):
+            return "❌ Custom error: \(error.localizedDescription)"
         }
     }
 }

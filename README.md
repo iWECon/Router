@@ -19,7 +19,7 @@ A powerful route for Swift.
 # Register
 
 ```swift
-let userMapping = MappingInfo(group: "user", maps: [
+let userMapping = RouteMapping(group: "user", maps: [
 
     // 1. none params
     // user/info
@@ -48,13 +48,13 @@ let userMapping = MappingInfo(group: "user", maps: [
     .action("/logout", target: UserActions.self, remark: "user logout action")
 ])
 
-let chatMapping = MappingInfo(group: "chat", maps: [
+let chatMapping = RouteMapping(group: "chat", maps: [
     // 6> 
     // chat/sendMessage
     .action("/sendMessage", target: ChatActions.self, remark: "send message")
 ])
 
-Router.load(mappingInfo: userMapping, chatMapping)
+Router.load(mapping: userMapping, chatMapping)
 ```
 
 #### Use

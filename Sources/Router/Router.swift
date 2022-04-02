@@ -9,10 +9,10 @@ public struct Router {
 // MARK: - load mapping
 public extension Router {
     /// Cached all routes.
-    private static var routes: RouteCollect<MappingInfo.Route> = RouteCollect()
+    private static var routes: RouteCollect<RouteMapping.Route> = RouteCollect()
     
     /// Cached all actions.
-    private static var actions: RouteCollect<MappingInfo.Action> = RouteCollect()
+    private static var actions: RouteCollect<RouteMapping.Action> = RouteCollect()
     
     static var description: String {
         var tmp: String = ""
@@ -26,9 +26,9 @@ public extension Router {
     }
     
     /// Load mapping info
-    /// - Parameter mappingInfo: MappingInfo...
-    static func load(mappingInfo: MappingInfo...) {
-        for (_routes, _actions) in mappingInfo.map({ $0.convert() }) {
+    /// - Parameter mapping: RouteMapping...
+    static func load(mapping: RouteMapping...) {
+        for (_routes, _actions) in mapping.map({ $0.convert() }) {
             self.routes.merge(values: _routes)
             self.actions.merge(values: _actions)
         }
@@ -37,8 +37,8 @@ public extension Router {
     /// Load route mapping
     /// - Parameter routeRemote: RouteRemote use Codable initlized.
     static func load(remote: RouteRemoteProvider) {
-        var _routes: [String: MappingInfo.Route] = [:]
-        var _actions: [String: MappingInfo.Action] = [:]
+        var _routes: [String: RouteMapping.Route] = [:]
+        var _actions: [String: RouteMapping.Action] = [:]
         
         for route in remote.routes {
             guard let clazzName = NSClassFromString(route.targetName),
@@ -47,7 +47,7 @@ public extension Router {
                 continue
             }
             let key = route.group + route.path
-            _routes[key] = MappingInfo.Route(target: vcTarget, requiredInfo: MappingInfo.Route.RequiredInfo(route.path))
+            _routes[key] = RouteMapping.Route(target: vcTarget, requiredInfo: RouteMapping.Route.RequiredInfo(route.path))
         }
         
         for action in remote.actions {
@@ -58,7 +58,7 @@ public extension Router {
             }
             
             let key = action.group + action.path
-            _actions[key] = MappingInfo.Action(target: actionTarget)
+            _actions[key] = RouteMapping.Action(target: actionTarget)
         }
         
         self.routes.merge(values: _routes)
@@ -74,10 +74,11 @@ public extension Router {
         do {
             return try handleRouteString(route, transition: transition)
         } catch {
-            guard let routeError = error as? RouteError else {
-                return false
+            if let routeError = error as? RouteError {
+                self.provider.errorCatch(routeError)
+            } else {
+                self.provider.errorCatch(.error(error))
             }
-            self.provider.errorCatch(routeError)
         }
         return false
     }
@@ -87,7 +88,7 @@ public extension Router {
             throw RouteError.empty
         }
         
-        let routeInfo = try parseRoute(route, transition: transition)
+        let routeInfo = try self.provider.parseRoute(route) ?? parseRoute(route, transition: transition)
         guard self.provider.processible(routeInfo) else {
             throw RouteError.providerReject("`processible` return false")
         }
