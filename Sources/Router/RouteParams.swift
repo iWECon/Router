@@ -4,7 +4,7 @@ protocol _RouteParams {
     var aliasNames: [String] { get set }
 }
 protocol _RouteParamsMapping {
-    func mapping(value: String) -> Bool
+    func mapping(value: Any) -> Bool
 }
 
 /// When Route initializes a controller, it maps params to params marked as @RouteParams in the controller.
@@ -45,15 +45,15 @@ protocol _RouteParamsMapping {
         set { value = newValue }
     }
     
-    var mapping: ((String) -> T)?
+    var mapping: ((Any) -> T)?
     
-    public init(wrappedValue: T, _ aliasNames: String..., mapping: ((String) -> T)? = nil) {
+    public init(wrappedValue: T, _ aliasNames: String..., mapping: ((Any) -> T)? = nil) {
         self.aliasNames = aliasNames
         self.value = wrappedValue
         self.mapping = mapping
     }
     
-    func mapping(value: String) -> Bool {
+    func mapping(value: Any) -> Bool {
         guard let mapping = mapping else {
             // use built-in mapping
             return false

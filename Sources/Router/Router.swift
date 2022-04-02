@@ -88,7 +88,8 @@ public extension Router {
             throw RouteError.empty
         }
         
-        let routeInfo = try self.provider.parseRoute(route, transition: transition) ?? parseRoute(route, transition: transition)
+        let newRoute = try self.provider.parseRoute(route) ?? route
+        let routeInfo = try self.parseRoute(newRoute, transition: transition)
         guard self.provider.processible(routeInfo) else {
             throw RouteError.providerReject("`processible` return false")
         }
@@ -120,7 +121,8 @@ public extension Router {
             
             return self.provider.transition(controller: controller, transition: routeInfo.transition)
         }
-        return false
+        
+        throw RouteError.notFound("\(routeInfo.description)")
     }
     
     // MARK: Parse route

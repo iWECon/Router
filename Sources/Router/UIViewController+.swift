@@ -5,7 +5,7 @@ extension UIViewController: _UIViewControllerRouteParamsMapping {
     open func routeParamsMappingWillStart() { }
     open func routeParamsMappingDidFinish() { }
     
-    open func routeParamsMappingProcess(_ params: [String : String]) {
+    open func routeParamsMappingProcess(_ params: [String : Any]) {
         let mirror = Mirror(reflecting: self)
         for (_, value) in mirror.children {
             guard let aliasName: [String] = (value as? _RouteParams)?.aliasNames,
@@ -34,7 +34,10 @@ extension UIViewController: _UIViewControllerRouteParamsMapping {
 extension UIViewController {
     
     // MARK: Built-in mapping
-    private func builtInMapping(cast: Any, value: String) {
+    private func builtInMapping(cast: Any, value: Any) {
+        guard let value = value as? String else {
+            return
+        }
         let nsValue: NSString = value as NSString
         
         // MARK: String

@@ -23,6 +23,16 @@ public struct RouteInfo: CustomStringConvertible {
     }
     
     public var description: String {
-        "Route { \(originalRoute) }"
+        """
+RouteInfo {
+    scheme: \(scheme),
+    group: \(group),
+    path: \(path),
+    params: \(params),
+    transition: \(transition),
+    -----------
+    originalRoute: \(originalRoute)
+}
+"""
     }
 }
