@@ -53,6 +53,12 @@ protocol _RouteParamsMapping {
         self.mapping = mapping
     }
     
+    public init(wrappedValue: T, _ aliasNames: [String], mapping: ((Any) -> T)? = nil) {
+        self.aliasNames = aliasNames
+        self.value = wrappedValue
+        self.mapping = mapping
+    }
+    
     func mapping(value: Any) -> Bool {
         guard let mapping = mapping else {
             // use built-in mapping
