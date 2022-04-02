@@ -16,6 +16,8 @@ final class UserController: UIViewController {
     
     @RouteParams("id", "userId") var userId: String = ""
     
+    @RouteParams("name") var nickname: String? = nil
+    
     override func routeParamsMappingDidFinish() {
         print("finish mapping with userId: \(userId)")
     }

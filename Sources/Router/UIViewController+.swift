@@ -7,10 +7,15 @@ extension UIViewController: _UIViewControllerRouteParamsMapping {
     
     open func routeParamsMappingProcess(_ params: [String : Any]) {
         let mirror = Mirror(reflecting: self)
-        for (_, value) in mirror.children {
-            guard let aliasName: [String] = (value as? _RouteParams)?.aliasNames,
-                  let mapping: _RouteParamsMapping = value as? _RouteParamsMapping
-            else {
+        for (key, value) in mirror.children {
+            let peropertyAliasName = (value as? _RouteParams)?.aliasNames ?? []
+            var aliasName: Set<String> = Set(peropertyAliasName)
+            if let labelName = key { // contains the property original name
+                let value = labelName.replacingOccurrences(of: "_", with: "")
+                aliasName.insert(value)
+            }
+            
+            guard let mapping: _RouteParamsMapping = value as? _RouteParamsMapping else {
                 continue
             }
             

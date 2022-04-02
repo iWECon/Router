@@ -1,7 +1,7 @@
 import Foundation
 
 protocol _RouteParams {
-    var aliasNames: [String] { get set }
+    var aliasNames: [String]? { get set }
 }
 protocol _RouteParamsMapping {
     func mapping(value: Any) -> Bool
@@ -38,7 +38,7 @@ protocol _RouteParamsMapping {
 /// "native://user/info?nickname=iiiam.in"
 /// ```
 @propertyWrapper public class RouteParams<T>: _RouteParams, _RouteParamsMapping {
-    var aliasNames: [String]
+    var aliasNames: [String]?
     var value: T
     public var wrappedValue: T {
         get { value }
@@ -46,6 +46,15 @@ protocol _RouteParamsMapping {
     }
     
     var mapping: ((Any) -> T)?
+    
+    public init(wrappedValue: T) {
+        self.value = wrappedValue
+    }
+    
+    public init(wrappedValue: T, mapping: ((Any) -> T)? = nil) {
+        self.value = wrappedValue
+        self.mapping = mapping
+    }
     
     public init(wrappedValue: T, _ aliasNames: String..., mapping: ((Any) -> T)? = nil) {
         self.aliasNames = aliasNames
@@ -69,4 +78,3 @@ protocol _RouteParamsMapping {
         return true
     }
 }
-
