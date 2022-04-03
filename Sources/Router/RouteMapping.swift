@@ -22,7 +22,7 @@ public struct RouteMapping {
         
         for map in maps {
             switch map {
-            case let .route(path, target):
+            case .route(let path, let target):
                 let _key: String
                 if let index = path.firstIndex(of: "?") {
                     let endIndex = path.index(index, offsetBy: -1)
@@ -32,7 +32,7 @@ public struct RouteMapping {
                 }
                 _routes[_key.lowercased()] = RouteMapping.Route(target: target, requiredInfo: RequiredInfo(path))
                 
-            case let .action(path, target):
+            case .action(let path, let target):
                 let _key: String
                 if let index = path.firstIndex(of: "?") {
                     let endIndex = path.index(index, offsetBy: -1)
@@ -48,9 +48,9 @@ public struct RouteMapping {
     }
 }
 
-// MARK: - Infos
 extension RouteMapping {
     
+    // MARK: Route
     struct Route: CustomStringConvertible {
         var target: UIViewController.Type
         var requiredInfo: RequiredInfo
@@ -59,7 +59,7 @@ extension RouteMapping {
             "Route { target: \(target), \(requiredInfo) } "
         }
     }
-    
+    // MARK: Action
     struct Action: CustomStringConvertible {
         var target: RouteAction.Type
         var requiredInfo: RequiredInfo
@@ -69,6 +69,7 @@ extension RouteMapping {
         }
     }
     
+    // MARK: RequiredInfo
     struct RequiredInfo: CustomStringConvertible {
         var params: [Set<String>] = []
         

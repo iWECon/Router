@@ -14,9 +14,8 @@ enum MessageRoute: ModuleRoute {
 
 final class UserController: UIViewController {
     
-    @RouteParams("id", "userId") var userId: String = ""
-    
-    @RouteParams("name") var nickname: String? = nil
+    @RouteParams var userId: String = ""
+    @RouteParams var nickname: String = ""
     
     override func routeParamsMappingDidFinish() {
         print("finish mapping with userId: \(userId)")

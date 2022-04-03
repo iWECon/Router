@@ -156,20 +156,14 @@ public extension Router {
                 }
                 return (queryItem.name, removingPercentValue)
             }
-            .map { value in
-                [value.0: value.1]
-            }
         
-        var queriesMerged = queries.first ?? [:]
-        queries.forEach { value in
-            queriesMerged.merge(value, uniquingKeysWith: { $1 })
-        }
+        let params = Dictionary(uniqueKeysWithValues: queries)
         
         let routeInfo = RouteInfo(
             scheme: scheme,
             group: host,
             path: routeComponents.path,
-            params: queriesMerged,
+            params: params,
             transition: transition,
             originalRoute: route
         )

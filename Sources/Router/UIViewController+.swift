@@ -69,6 +69,24 @@ extension UIViewController {
         } else if let rp = cast as? RouteParams<Int64?> {
             rp.value = Int64(nsValue.integerValue)
             
+            // MARK: UInt
+        } else if let rp = cast as? RouteParams<UInt> {
+            rp.value = UInt(nsValue.integerValue)
+        } else if let rp = cast as? RouteParams<UInt?> {
+            rp.value = UInt(nsValue.integerValue)
+            
+            // MARK: UInt32
+        } else if let rp = cast as? RouteParams<UInt32> {
+            rp.value = UInt32(nsValue.integerValue)
+        } else if let rp = cast as? RouteParams<UInt32?> {
+            rp.value = UInt32(nsValue.integerValue)
+            
+            // MARK: UInt64
+        } else if let rp = cast as? RouteParams<UInt64> {
+            rp.value = UInt64(nsValue.integerValue)
+        } else if let rp = cast as? RouteParams<UInt64?> {
+            rp.value = UInt64(nsValue.integerValue)
+            
             // MARK: Float
         } else if let rp = cast as? RouteParams<Float> {
             rp.value = nsValue.floatValue
