@@ -4,7 +4,7 @@ protocol _RouteParams {
     var aliasNames: [String]? { get set }
 }
 protocol _RouteParamsMapping {
-    func mapping(value: Any) -> Bool
+    func mapping(value: Any)
 }
 
 /// When Route initializes a controller, it maps params to params marked as @RouteParams in the controller.
@@ -75,13 +75,26 @@ protocol _RouteParamsMapping {
         self.mapping = mapping
     }
     
-    func mapping(value: Any) -> Bool {
-        guard let mapping = mapping else {
-            // use built-in mapping
-            return false
+    /// value convert
+    internal func mapping(value: Any) {
+        if let mapping = mapping { // custom mapping
+            self.value = mapping(value)
+            return
         }
-        // custom mapping
-        self.value = mapping(value)
-        return true
+        if _castToGenericMapping(value: value) {
+            return
+        }
+        
+        // notice error
+        assert({ print("❌ [RouteParams] Cannot conver value of type `\(type(of: value.self))` to specified type `\(T.self)`, you can try use `mapping` to implemented mapping through for yourself."); return true; }())
+    }
+    
+    /// convert value to generic type
+    internal func _castToGenericMapping(value: Any) -> Bool {
+        if let t = value as? T {
+            self.value = t
+            return true
+        }
+        return false
     }
 }

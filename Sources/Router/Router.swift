@@ -98,7 +98,7 @@ public extension Router {
         if self.provider.isWebScheme(routeInfo),
            let webController = self.provider.webController(routeInfo)
         {
-            return self.provider.transition(controller: webController, transition: routeInfo.transition)
+            return try self.transitionChain(controller: webController, transition: transition)
         }
         
         // MARK: Module handle
@@ -119,7 +119,7 @@ public extension Router {
             controller.routeParamsMappingProcess(routeInfo.params)
             controller.routeParamsMappingDidFinish()
             
-            return self.provider.transition(controller: controller, transition: routeInfo.transition)
+            return try self.transitionChain(controller: controller, transition: transition)
         }
         
         throw RouteError.notFound(newRoute)

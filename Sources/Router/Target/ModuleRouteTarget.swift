@@ -84,18 +84,22 @@ extension ModuleRoute {
 public extension Router {
     
     @discardableResult static func navigate(to destination: ModuleRoute) -> Bool {
-        switch destination.target {
-        case .controller(let controller, let transition):
-            if destination.processible() {
-                return self.provider.transition(controller: controller, transition: transition)
+        do {
+            switch destination.target {
+            case .controller(let controller, let transition):
+                if destination.processible() {
+                    return try self.transitionChain(controller: controller, transition: transition)
+                }
+                return false
+                
+            case .action(let action, let params):
+                if destination.processible() {
+                    return action.routeAction(params ?? [:])
+                }
+                return false
             }
-            return false
+        } catch {
             
-        case .action(let action, let params):
-            if destination.processible() {
-                return action.routeAction(params ?? [:])
-            }
-            return false
         }
     }
     

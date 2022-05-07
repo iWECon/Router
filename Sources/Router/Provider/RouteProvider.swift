@@ -37,6 +37,9 @@ public protocol RouteProvider {
     /// Check if the route is web route.
     /// - Returns: return true if the route prefix contains "http" or "https" else return false.
     func isWebScheme(_ routeInfo: RouteInfo) -> Bool
+    
+    func transitionWillStart(controller: UIViewController, transition: RouteTransition) throws
+    func transitionDidFinish(controller: UIViewController, transition: RouteTransition) throws
 }
 
 extension RouteProvider {
@@ -68,4 +71,6 @@ extension RouteProvider {
         true
     }
     
+    public func transitionWillStart(controller: UIViewController, transition: RouteTransition) throws { }
+    public func transitionDidFinish(controller: UIViewController, transition: RouteTransition) throws { }
 }
