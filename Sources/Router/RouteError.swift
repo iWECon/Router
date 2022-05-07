@@ -4,7 +4,7 @@ import Foundation
 ///
 /// To catch error with RouteProvider
 ///
-public enum RouteError: Error, LocalizedError {
+public enum RouteError: Swift.Error, LocalizedError {
     
     /// the `route` is empty (length is zero)
     case empty

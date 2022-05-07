@@ -22,8 +22,6 @@ public protocol RouteProvider {
     /// - Returns: newRoute or nil (nil means no conversion required).
     func parseRoute(_ route: String) throws -> ParseInfo?
     
-    func back(_ back: RouterBack, animated: Bool, defer: (() -> Void)?) -> Bool
-    
     /// Make a UIViewController with UIViewController.Type.
     /// - Returns: return a valid controller, return nil if can't create controller with type.
     func makeController(type: UIViewController.Type) -> UIViewController?
@@ -37,6 +35,12 @@ public protocol RouteProvider {
     /// Check if the route is web route.
     /// - Returns: return true if the route prefix contains "http" or "https" else return false.
     func isWebScheme(_ routeInfo: RouteInfo) -> Bool
+    
+    /// Will start from current controller transition to another controller
+    func transitionWillStart(controller: UIViewController, transition: RouteTransition) throws
+    
+    /// Transition from current controller to another controller did finish
+    func transitionDidFinish(controller: UIViewController, transition: RouteTransition) throws
 }
 
 extension RouteProvider {
@@ -64,8 +68,6 @@ extension RouteProvider {
         ["http", "https"].contains(routeInfo.scheme)
     }
     
-    public func back(_ back: RouterBack, animated: Bool, defer: (() -> Void)?) -> Bool {
-        true
-    }
-    
+    public func transitionWillStart(controller: UIViewController, transition: RouteTransition) throws { }
+    public func transitionDidFinish(controller: UIViewController, transition: RouteTransition) throws { }
 }

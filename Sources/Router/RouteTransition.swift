@@ -1,4 +1,5 @@
 import Foundation
+import UIKit
 
 public enum RouteTransition {
     case push(animated: Bool = true)

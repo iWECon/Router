@@ -36,6 +36,11 @@ public enum ModuleRouteTarget: CustomStringConvertible {
     }
 }
 
+// MARK: RouteModuleError
+public enum ModuleRouteError: Swift.Error, LocalizedError {
+    case unprocessed(reason: String)
+}
+
 // MARK: ModuleRoute
 
 /// ModuleRoute
@@ -67,34 +72,35 @@ public protocol ModuleRoute: RouteTarget, CustomStringConvertible {
     /// Target of route
     var target: ModuleRouteTarget { get }
     
-    /// Return false to stop doing action (show controller or do some action)
-    func processible() -> Bool
+    /// Return false or throw error to stop doing action (show controller or execution some action)
+    /// use ModuleRouteError to fast throw error
+    func processible() throws
 }
 
 extension ModuleRoute {
     public var description: String {
         target.description
     }
-    public func processible() -> Bool {
-        true
-    }
+    
+    public func processible() throws { }
 }
 
 // MARK: - Handle
 public extension Router {
     
     @discardableResult static func navigate(to destination: ModuleRoute) -> Bool {
-        switch destination.target {
-        case .controller(let controller, let transition):
-            if destination.processible() {
-                return self.provider.transition(controller: controller, transition: transition)
-            }
-            return false
-            
-        case .action(let action, let params):
-            if destination.processible() {
+        do {
+            switch destination.target {
+            case .controller(let controller, let transition):
+                try destination.processible()
+                return try self.transitionChain(controller: controller, transition: transition)
+                
+            case .action(let action, let params):
+                try destination.processible()
                 return action.routeAction(params ?? [:])
             }
+        } catch {
+            self.errorForward(error)
             return false
         }
     }

@@ -14,11 +14,17 @@ enum MessageRoute: ModuleRoute {
 
 final class UserController: UIViewController {
     
-    @RouteParams var userId: String = ""
-    @RouteParams var nickname: String = ""
+    struct User {
+        let name: String
+    }
+    
+    @RouteParams("id") var userId: String = ""
+    @RouteParams("nickname", "name") var nickname: String = ""
+    @RouteParams var user: User?
     
     override func routeParamsMappingDidFinish() {
         print("finish mapping with userId: \(userId)")
+        print("finish mapping with user.name: \(user?.name ?? "NOT FOUND")")
     }
 }
 
@@ -52,5 +58,14 @@ final class RouterTests: XCTestCase {
         Router.navigate(to: MessageRoute.chatUser)
         
         print(Router.description)
+    }
+    
+    func testMappingStruct() throws {
+        let controller = UserController()
+        controller.routeParamsMappingProcess(["user": UserController.User(name: "Hello~"), "id": "1824"])
+        controller.routeParamsMappingDidFinish()
+        
+        XCTAssertEqual("Hello~", controller.user?.name)
+        XCTAssertEqual("1824", controller.userId)
     }
 }
