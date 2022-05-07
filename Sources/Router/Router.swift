@@ -74,16 +74,16 @@ public extension Router {
         do {
             return try handleRouteString(route, transition: transition)
         } catch {
-            if let routeError = error as? RouteError {
-                self.provider.errorCatch(routeError)
-            } else {
-                self.provider.errorCatch(.error(error))
-            }
+            self.errorForward(error)
         }
         return false
     }
     
-    private static func handleRouteString(_ route: String, transition: RouteTransition) throws -> Bool {
+}
+
+private extension Router {
+    
+    static func handleRouteString(_ route: String, transition: RouteTransition) throws -> Bool {
         guard !route.isEmpty else {
             throw RouteError.empty
         }
@@ -128,7 +128,7 @@ public extension Router {
     // MARK: Parse route
     /// Check scheme, host and path
     /// - Parameter route: route
-    private static func parseRoute(_ route: String, transition: RouteTransition) throws -> RouteInfo {
+    static func parseRoute(_ route: String, transition: RouteTransition) throws -> RouteInfo {
         guard let routeComponents: URLComponents = URLComponents(string: route) else {
             throw RouteError.invalid(route: route)
         }

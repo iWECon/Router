@@ -10,7 +10,9 @@ extension UIViewController: _UIViewControllerRouteParamsMapping {
         for (key, value) in mirror.children {
             let peropertyAliasName = (value as? _RouteParams)?.aliasNames ?? []
             var aliasName: Set<String> = Set(peropertyAliasName)
-            if let labelName = key { // contains the property original name
+            
+            // set the property original name to aliasName
+            if let labelName = key, !aliasName.contains(labelName) {
                 let value = labelName.replacingOccurrences(of: "_", with: "")
                 aliasName.insert(value)
             }
@@ -19,7 +21,7 @@ extension UIViewController: _UIViewControllerRouteParamsMapping {
                 continue
             }
             
-            // traverse aliasName and cast value to generic type
+            // traverse aliasName and cast value to required type
             for name in aliasName {
                 guard params.keys.contains(name),
                       let willSetValue = params[name]
