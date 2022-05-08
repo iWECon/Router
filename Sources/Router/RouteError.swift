@@ -15,39 +15,39 @@ public enum RouteError: Swift.Error, LocalizedError {
     /// usually thrown when scheme or host or path cannot be obtained from URLComponents
     case parseFailure(_ reason: String)
     
-    /// usually thrown when RouteProvider.pocessible return false
-    case providerReject(_ reason: String)
-    
     /// usually thrown when route not contains required params
     case missingParams(_ description: String)
     
     case notFound(_ reason: String)
     
     /// usually thrown when custom error
-    case error(Error)
+    case error(_ error: Error)
+    
+    /// custom reason
+    case reason(_ reason: String)
     
     public var errorDescription: String? {
         switch self {
         case .empty:
-            return "❌ The route is empty"
+            return "❌ [.empty] The route is empty"
             
         case .invalid(let route):
-            return "❌ Invalid route: \(route), can't convert to URL"
+            return "❌ [.invalid] Invalid route: \(route), can't convert to URL"
             
         case .parseFailure(let reason):
-            return "❌ Parse route failure: \(reason)"
-            
-        case .providerReject(let reason):
-            return "❌ Provider rejected: \(reason)"
+            return "❌ [.parseFailure] Parse route failure: \(reason)"
             
         case .missingParams(let description):
-            return "❌ Missing params: \(description)"
+            return "❌ [.missingParams]: \(description)"
             
         case .notFound(let reason):
-            return "❌ Not found { \(reason) }"
+            return "❌ [.notFound] { \(reason) }"
             
         case .error(let error):
-            return "❌ Custom error: \(error.localizedDescription)"
+            return "❌ [.error]: \(error.localizedDescription)"
+            
+        case .reason(let reason):
+            return "❌ [.reason] \(reason)"
         }
     }
 }

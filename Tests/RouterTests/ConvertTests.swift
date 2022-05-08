@@ -15,12 +15,6 @@ struct ConvertAction: RouteAction {
 }
 
 struct ConvertPathRouteProvider: RouteProvider {
-    func processible(_ routeInfo: RouteInfo) -> Bool {
-        true
-    }
-    func transition(controller: UIViewController, transition: RouteTransition) -> Bool {
-        true
-    }
     func parseRoute(_ route: String) throws -> ParseInfo? {
         guard route.contains("://?path=") else {
             return nil

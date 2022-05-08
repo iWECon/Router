@@ -75,8 +75,8 @@ public extension Router {
             return try handleRouteString(route, transition: transition)
         } catch {
             self.errorForward(error)
+            return false
         }
-        return false
     }
     
 }
@@ -90,9 +90,7 @@ private extension Router {
         
         let newRoute = try self.provider.parseRoute(route)?._route ?? route
         let routeInfo = try self.parseRoute(newRoute, transition: transition)
-        guard self.provider.processible(routeInfo) else {
-            throw RouteError.providerReject("`processible` return false")
-        }
+        try self.provider.processible(routeInfo)
         
         // MARK: Web handle
         if self.provider.isWebScheme(routeInfo),
@@ -108,7 +106,7 @@ private extension Router {
         }
         // route
         if let route = self.routes[routeInfo.routeKey],
-           let controller = self.provider.makeController(type: route.target)
+           let controller = try self.provider.makeController(type: route.target)
         {
             let diffable = route.requiredInfo.diffable(from: routeInfo.params.keys.map({ $0 }))
             if !diffable.isEmpty {
