@@ -9,14 +9,20 @@ import XCTest
 @testable import Router
 
 struct ConvertAction: RouteAction {
-    static func routeAction(_ params: [String : Any]) -> Bool {
-        true
+    static func routeAction(_ params: [String : Any]) throws {
+        let group = params["__group"] as? String
+        if group != "base" && group != "Base" {
+            throw RouteActionError.failure("not base")
+        }
+        if params["__path"] as? String != "/updateResource" {
+            throw RouteActionError.failure("not updateResource")
+        }
     }
 }
 
 struct ConvertPathRouteProvider: RouteProvider {
     func parseRoute(_ route: String) throws -> ParseInfo? {
-        guard route.contains("://?path=") else {
+        guard route.contains("path=") else {
             return nil
         }
         let components = URLComponents(string: route)
@@ -36,14 +42,8 @@ struct ConvertPathRouteProvider: RouteProvider {
 }
 
 struct ConvertModuleActionRouteProvider: RouteProvider {
-    func processible(_ routeInfo: RouteInfo) -> Bool {
-        true
-    }
-    func transition(controller: UIViewController, transition: RouteTransition) -> Bool {
-        true
-    }
     func parseRoute(_ route: String) throws -> ParseInfo? {
-        guard route.contains("://?module=") else {
+        guard route.contains("module=") else {
             return nil
         }
         let components = URLComponents(string: route)
@@ -57,18 +57,11 @@ struct ConvertModuleActionRouteProvider: RouteProvider {
 }
 
 struct ConvertClassNameRouteProvider: RouteProvider {
-    func processible(_ routeInfo: RouteInfo) -> Bool {
-        true
-    }
-    func transition(controller: UIViewController, transition: RouteTransition) -> Bool {
-        true
-    }
-    
     var mapping: [String: String] = [
         "WXMomentsController": "native://community/moments"
     ]
     func parseRoute(_ route: String) throws -> ParseInfo? {
-        guard route.contains("://?className=") else {
+        guard route.contains("className=") else {
             return nil
         }
         let components = URLComponents(string: route)

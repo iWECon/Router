@@ -96,17 +96,19 @@ private extension Router {
         if self.provider.isWebScheme(routeInfo),
            let webController = self.provider.webController(routeInfo)
         {
-            return try self.transitionChain(controller: webController, transition: transition)
+            try self.transitionChain(controller: webController, transition: transition)
+            return true
         }
         
         // MARK: Module handle
         // action
         if let action = self.actions[routeInfo.routeKey] {
-            return action.target.routeAction(routeInfo.params)
+            try action.target.routeAction(routeInfo.params)
+            return true
         }
         // route
         if let route = self.routes[routeInfo.routeKey],
-           let controller = try self.provider.makeController(type: route.target)
+           let controller = self.provider.makeController(type: route.target)
         {
             let diffable = route.requiredInfo.diffable(from: routeInfo.params.keys.map({ $0 }))
             if !diffable.isEmpty {
@@ -117,7 +119,8 @@ private extension Router {
             controller.routeParamsMappingProcess(routeInfo.params)
             controller.routeParamsMappingDidFinish()
             
-            return try self.transitionChain(controller: controller, transition: transition)
+            try self.transitionChain(controller: controller, transition: transition)
+            return true
         }
         
         throw RouteError.notFound(newRoute)
@@ -155,7 +158,11 @@ private extension Router {
                 return (queryItem.name, removingPercentValue)
             }
         
-        let params = Dictionary(uniqueKeysWithValues: queries)
+        var params = Dictionary(uniqueKeysWithValues: queries)
+        params.merge([
+            "__group": host,
+            "__path": routeComponents.path
+        ], uniquingKeysWith: { $1 })
         
         let routeInfo = RouteInfo(
             scheme: scheme,

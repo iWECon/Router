@@ -10,9 +10,9 @@ import Foundation
 /// Example:
 /// ```swift
 /// struct BaseActions: RouteAction {
-///     static func routeAction(_ routeInfo: RouteInfo?) -> Bool {
-///         guard let routeInfo = routeInfo else {
-///             return true
+///     static func routeAction(_ params: [String: Any]) throws {
+///         guard let action = params["action"] else {
+///             throw RouteActionError.failure("invalid params")
 ///         }
 ///         // do something
 ///     }
@@ -24,5 +24,18 @@ import Foundation
 /// ])
 /// ```
 public protocol RouteAction: RouteTarget {
-    static func routeAction(_ params: [String: Any]) -> Bool
+    
+    /// use `RouteActionError` to quickly throw an error
+    static func routeAction(_ params: [String: Any]) throws
+}
+
+public enum RouteActionError: Swift.Error, LocalizedError {
+    case failure(_ reason: String)
+    
+    public var errorDescription: String? {
+        switch self {
+        case .failure(let reason):
+            return "[RouteActionError] \(reason)"
+        }
+    }
 }

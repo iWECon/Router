@@ -29,8 +29,8 @@ final class UserController: UIViewController {
 }
 
 struct BaseActions: RouteAction {
-    static func routeAction(_ params: [String: Any]) -> Bool {
-        return true
+    static func routeAction(_ params: [String: Any]) throws {
+        
     }
 }
 

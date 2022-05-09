@@ -7,11 +7,10 @@ import UIKit
 // MARK: Extensions
 extension Router {
     
-    internal static func transitionChain(controller: UIViewController, transition: RouteTransition) throws -> Bool {
+    internal static func transitionChain(controller: UIViewController, transition: RouteTransition) throws {
         try self.provider.transitionWillStart(controller: controller, transition: transition)
         try self.provider.transition(controller: controller, transition: transition)
         try self.provider.transitionDidFinish(controller: controller, transition: transition)
-        return true
     }
 }
 

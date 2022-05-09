@@ -93,11 +93,13 @@ public extension Router {
             switch destination.target {
             case .controller(let controller, let transition):
                 try destination.processible()
-                return try self.transitionChain(controller: controller, transition: transition)
+                try self.transitionChain(controller: controller, transition: transition)
+                return true
                 
             case .action(let action, let params):
                 try destination.processible()
-                return action.routeAction(params ?? [:])
+                try action.routeAction(params ?? [:])
+                return true
             }
         } catch {
             self.errorForward(error)

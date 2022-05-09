@@ -23,7 +23,8 @@ struct RouteLogger {
     }
     
     private func makeMessage(_ message: String, file: String = #file, function: String = #function, line: Int = #line) -> String {
-        "[\(category)] \(message) [\(file):\(function)#\(line)]"
+        let fileName = (file as NSString).lastPathComponent
+        return "[\(category)] \(message) [\(fileName):\(function)#\(line)]"
     }
     
     private func _print(_ message: String) {
