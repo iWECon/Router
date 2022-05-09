@@ -2,21 +2,19 @@ import UIKit
 
 struct _DefaultRouteProvider: RouteProvider {
     
-    func processible(_ routeInfo: RouteInfo) -> Bool {
-        true
-    }
+    func processible(_ routeInfo: RouteInfo) throws { }
     
-    func transition(controller: UIViewController, transition: RouteTransition) -> Bool {
-        assert({ print("⚠️ You should implement RouteProvider"); return true }())
-        
+    func transition(controller: UIViewController, transition: RouteTransition) throws {
+        logger.warning("⚠️ You should implement RouteProvider")
+
         switch transition {
         case .push:
             // do push action
-            return true
-            
+            break
+
         case .presented:
             // do presented action
-            return true
+            break
         }
     }
     

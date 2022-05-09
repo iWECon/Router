@@ -73,7 +73,7 @@ public protocol ModuleRoute: RouteTarget, CustomStringConvertible {
     var target: ModuleRouteTarget { get }
     
     /// Return false or throw error to stop doing action (show controller or execution some action)
-    /// use ModuleRouteError to fast throw error
+    /// use `ModuleRouteError.unprocessed(reason: String)` to quickly throw an error
     func processible() throws
 }
 

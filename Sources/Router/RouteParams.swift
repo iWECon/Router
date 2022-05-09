@@ -86,7 +86,7 @@ protocol _RouteParamsMapping {
         }
         
         // notice error
-        assert({ print("❌ [RouteParams] Cannot conver value of type `\(type(of: value.self))` to specified type `\(T.self)`, you can try use `mapping` to implemented mapping through for yourself."); return true; }())
+        logger.error("❌ [RouteParams] Cannot conver value of type `\(type(of: value.self))` to specified type `\(T.self)`, you can try use `mapping` to implemented mapping through for yourself.")
     }
     
     /// convert value to generic type

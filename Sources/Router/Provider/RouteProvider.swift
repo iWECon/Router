@@ -4,14 +4,15 @@ import SafariServices
 public protocol RouteProvider {
     
     /// If check routeInfo.scheme. Please add ["http", "https"] if you want pass web route.
-    /// - Returns: return true to continue handle, return false to stop.
-    func processible(_ routeInfo: RouteInfo) -> Bool
+    /// use `RouteError.processible(_ reason: String)` to quickly throw an error
+    /// Throw an error to stop running
+    func processible(_ routeInfo: RouteInfo) throws
     
-    /// Transition to controller with RouteTransition (push or presented).
-    /// - Returns: return true if successed else return false.
-    func transition(controller: UIViewController, transition: RouteTransition) -> Bool
+    /// Transition to controller with RouteTransition (push or presented)
+    /// Use `RouteError.transitionFailure(_ reason: String)` to quickly throw an error
+    /// Throw an error to stop running
+    func transition(controller: UIViewController, transition: RouteTransition) throws
     
-    // optional
     /// Error catch when route handle happend error.
     func errorCatch(_ error: RouteError)
     
@@ -44,7 +45,7 @@ public protocol RouteProvider {
 }
 
 extension RouteProvider {
-    
+    public func processible(_ routeInfo: RouteInfo) throws { }
     public func parseRoute(_ route: String) throws -> ParseInfo? {
         nil
     }
@@ -54,7 +55,7 @@ extension RouteProvider {
     }
     
     public func errorCatch(_ error: RouteError) {
-        assert({ print(error.localizedDescription); return true }())
+        logger.error(error.localizedDescription)
     }
     
     public func webController(_ routeInfo: RouteInfo) -> UIViewController? {
@@ -69,5 +70,6 @@ extension RouteProvider {
     }
     
     public func transitionWillStart(controller: UIViewController, transition: RouteTransition) throws { }
+    public func transition(controller: UIViewController, transition: RouteTransition) throws { }
     public func transitionDidFinish(controller: UIViewController, transition: RouteTransition) throws { }
 }
