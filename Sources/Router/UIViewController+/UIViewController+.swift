@@ -13,7 +13,8 @@ extension UIViewController: _UIViewControllerRouteParamsMapping {
             
             // set the property original name to aliasName
             if let labelName = key, !aliasName.contains(labelName) {
-                let value = labelName.replacingOccurrences(of: "_", with: "")
+                let stripUnderline = labelName.index(labelName.startIndex, offsetBy: 1)
+                let value = String(labelName[stripUnderline...])
                 aliasName.insert(value)
             }
             
