@@ -32,19 +32,19 @@ public enum RouteError: Swift.Error, LocalizedError {
             return "❌ [.empty] The route is empty"
             
         case .invalid(let route):
-            return "❌ [.invalid] Invalid route: \(route), can't convert to URL"
+            return "❌ [.invalid] Invalid route \(route), can't convert to URL"
             
         case .parseFailure(let reason):
             return "❌ [.parseFailure] Parse route failure: \(reason)"
             
         case .missingParams(let description):
-            return "❌ [.missingParams]: \(description)"
+            return "❌ [.missingParams] \(description)"
             
         case .notFound(let reason):
             return "❌ [.notFound] { \(reason) }"
             
         case .error(let error):
-            return "❌ [.error]: \(error.localizedDescription)"
+            return "❌ [.error] \(error.localizedDescription)"
             
         case .reason(let reason):
             return "❌ [.reason] \(reason)"
