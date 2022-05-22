@@ -44,10 +44,10 @@ final class RouterTests: XCTestCase {
             
             // actions
             .action("/updateResources", target: BaseActions.self),
+            .action("/action?{*name}", target: BaseActions.self),
             
-            .actionMapping("/throwAnError", action: { params in
-                print("throwAnError", params)
-                throw RouteError.reason("I'am an error man")
+            .actionMapping("/throwAnError?{*id}", action: { params in
+                print("throwAnError bcz not `id`", params)
             }),
             .actionMapping("/thatsFine", action: { params in
                 print("fine", params)
@@ -63,8 +63,12 @@ final class RouterTests: XCTestCase {
         
         XCTAssertTrue(Router.handle(route: "native://user/updateResources"))
         
-        XCTAssertFalse(Router.handle(route: "native://user/throwAnError?id=10086"))
+        XCTAssertFalse(Router.handle(route: "native://user/throwAnError"))
         XCTAssertTrue(Router.handle(route: "native://user/thatsFine?ok=200"))
+        
+        // action name error
+        XCTAssertFalse(Router.handle(route: "native://user/action"))
+        XCTAssertTrue(Router.handle(route: "native://user/action?name=update"))
         
         Router.navigate(to: MessageRoute.chatUser)
         

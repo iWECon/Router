@@ -53,7 +53,7 @@ public struct RouteMapping {
                 } else {
                     _key = group + path
                 }
-                _actionMappings[_key.lowercased()] = RouteMapping.ActionMapping(mapping: action)
+                _actionMappings[_key.lowercased()] = RouteMapping.ActionMapping(mapping: action, requiredInfo: RequiredInfo(path))
             }
         }
         
@@ -61,11 +61,15 @@ public struct RouteMapping {
     }
 }
 
+protocol RouteMappingParamsRequriedable {
+    var requiredInfo: RouteMapping.RequiredInfo { get set }
+}
+
 extension RouteMapping {
     
     // MARK: Route
-    struct Route: CustomStringConvertible {
-        var target: UIViewController.Type
+    struct Route: CustomStringConvertible, RouteMappingParamsRequriedable {
+        let target: UIViewController.Type
         var requiredInfo: RequiredInfo
         
         var description: String {
@@ -74,17 +78,18 @@ extension RouteMapping {
     }
     
     // MARK: ActionMapping
-    struct ActionMapping: CustomStringConvertible {
-        var mapping: RouteMap.ActionMapping
+    struct ActionMapping: CustomStringConvertible, RouteMappingParamsRequriedable {
+        let mapping: RouteMap.ActionMapping
+        var requiredInfo: RequiredInfo
         
         var description: String {
-            "Route { actionMapping }"
+            "Route { actionMapping, \(requiredInfo) }"
         }
     }
     
     // MARK: Action
-    struct Action: CustomStringConvertible {
-        var target: RouteAction.Type
+    struct Action: CustomStringConvertible, RouteMappingParamsRequriedable {
+        let target: RouteAction.Type
         var requiredInfo: RequiredInfo
         
         var description: String {

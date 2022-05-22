@@ -113,11 +113,13 @@ private extension Router {
         // MARK: Module handle
         // actionMapping
         if let actionMapping = self.actionMappings[routeInfo.routeKey] {
+            try validationRequiredInfo(requriedable: actionMapping, routeInfo: routeInfo)
             try actionMapping.mapping(routeInfo.params)
             return true
         }
         // action
         if let action = self.actions[routeInfo.routeKey] {
+            try validationRequiredInfo(requriedable: action, routeInfo: routeInfo)
             try action.target.routeAction(routeInfo.params)
             return true
         }
@@ -125,11 +127,7 @@ private extension Router {
         if let route = self.routes[routeInfo.routeKey],
            let controller = self.provider.makeController(type: route.target)
         {
-            let diffable = route.requiredInfo.diffable(from: routeInfo.params.keys.map({ $0 }))
-            if !diffable.isEmpty {
-                throw RouteError.missingParams(diffable + ",\n   " + routeInfo.description + ", \n   " + route.requiredInfo.description)
-            }
-            
+            try validationRequiredInfo(requriedable: route, routeInfo: routeInfo)
             controller.routeParamsMappingWillStart()
             controller.routeParamsMappingProcess(routeInfo.params)
             controller.routeParamsMappingDidFinish()
@@ -139,6 +137,14 @@ private extension Router {
         }
         
         throw RouteError.notFound(newRoute)
+    }
+    
+    static func validationRequiredInfo(requriedable: RouteMappingParamsRequriedable, routeInfo: RouteInfo) throws {
+        let routeParamsKeys = routeInfo.params.keys.map({ $0 })
+        let diffable = requriedable.requiredInfo.diffable(from: routeParamsKeys)
+        
+        guard !diffable.isEmpty else { return }
+        throw RouteError.missingParams(diffable + ",\n   " + routeInfo.description + ", \n   " + requriedable.requiredInfo.description)
     }
     
     // MARK: Parse route
