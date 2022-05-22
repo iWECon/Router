@@ -43,7 +43,15 @@ final class RouterTests: XCTestCase {
             .route("/account?{*id/userId}", target: UIViewController.self),
             
             // actions
-            .action("/updateResources", target: BaseActions.self)
+            .action("/updateResources", target: BaseActions.self),
+            
+            .actionMapping("/throwAnError", action: { params in
+                print("throwAnError", params)
+                throw RouteError.reason("I'am an error man")
+            }),
+            .actionMapping("/thatsFine", action: { params in
+                print("fine", params)
+            }),
         ])
         Router.load(mapping: userMapping)
         
@@ -54,6 +62,9 @@ final class RouterTests: XCTestCase {
         XCTAssertFalse(Router.handle(route: "native://user/info"))
         
         XCTAssertTrue(Router.handle(route: "native://user/updateResources"))
+        
+        XCTAssertFalse(Router.handle(route: "native://user/throwAnError?id=10086"))
+        XCTAssertTrue(Router.handle(route: "native://user/thatsFine?ok=200"))
         
         Router.navigate(to: MessageRoute.chatUser)
         

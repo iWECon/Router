@@ -4,6 +4,7 @@ import UIKit
 ///
 /// use `Router.load(mapping: RouteMapping...) to load it`
 public struct RouteMapping {
+    
     public let group: String
     public let maps: [RouteMap]
     public init(group: String, maps: [RouteMap]) {
@@ -15,10 +16,12 @@ public struct RouteMapping {
     /// - Returns: (routes, actions)
     func convert() -> (
         routes: [String: RouteMapping.Route],
-        actions: [String: RouteMapping.Action]
+        actions: [String: RouteMapping.Action],
+        actionMappings: [String: RouteMapping.ActionMapping]
     ) {
         var _routes: [String: RouteMapping.Route] = [:]
         var _actions: [String: RouteMapping.Action] = [:]
+        var _actionMappings: [String: RouteMapping.ActionMapping] = [:]
         
         for map in maps {
             switch map {
@@ -41,10 +44,20 @@ public struct RouteMapping {
                     _key = group + path
                 }
                 _actions[_key.lowercased()] = RouteMapping.Action(target: target, requiredInfo: RequiredInfo(path))
+                
+            case .actionMapping(let path, let action):
+                let _key: String
+                if let index = path.firstIndex(of: "?") {
+                    let endIndex = path.index(index, offsetBy: -1)
+                    _key = group + path[...endIndex]
+                } else {
+                    _key = group + path
+                }
+                _actionMappings[_key.lowercased()] = RouteMapping.ActionMapping(mapping: action)
             }
         }
         
-        return (_routes, _actions)
+        return (_routes, _actions, _actionMappings)
     }
 }
 
@@ -59,6 +72,16 @@ extension RouteMapping {
             "Route { target: \(target), \(requiredInfo) } "
         }
     }
+    
+    // MARK: ActionMapping
+    struct ActionMapping: CustomStringConvertible {
+        var mapping: RouteMap.ActionMapping
+        
+        var description: String {
+            "Route { actionMapping }"
+        }
+    }
+    
     // MARK: Action
     struct Action: CustomStringConvertible {
         var target: RouteAction.Type

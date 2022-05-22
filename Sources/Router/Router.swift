@@ -8,11 +8,15 @@ public struct Router {
 
 // MARK: - load mapping
 public extension Router {
+    
     /// Cached all routes.
     private static var routes: RouteCollect<RouteMapping.Route> = RouteCollect()
     
     /// Cached all actions.
     private static var actions: RouteCollect<RouteMapping.Action> = RouteCollect()
+    
+    /// Cached all action mappings.
+    private static var actionMappings: RouteCollect<RouteMapping.ActionMapping> = RouteCollect()
     
     static var description: String {
         var tmp: String = ""
@@ -20,21 +24,27 @@ public extension Router {
             tmp += "\(routes)\n"
         }
         if !actions.isEmpty {
-            tmp += "\(actions)"
+            tmp += "\(actions)\n"
+        }
+        if !actionMappings.isEmpty {
+            tmp += "\(actionMappings)"
         }
         return tmp
     }
     
-    /// Load mapping info
+    /// Load mapping info.
     /// - Parameter mapping: RouteMapping...
     static func load(mapping: RouteMapping...) {
-        for (_routes, _actions) in mapping.map({ $0.convert() }) {
+        for (_routes, _actions, _actionMappings) in mapping.map({ $0.convert() }) {
             self.routes.merge(values: _routes)
             self.actions.merge(values: _actions)
+            self.actionMappings.merge(values: _actionMappings)
         }
     }
     
-    /// Load route mapping
+    /// Load route mapping.
+    /// `actionMapping` is not supported.
+    ///
     /// - Parameter routeRemote: RouteRemote use Codable initlized.
     static func load(remote: RouteRemoteProvider) {
         var _routes: [String: RouteMapping.Route] = [:]
@@ -101,6 +111,11 @@ private extension Router {
         }
         
         // MARK: Module handle
+        // actionMapping
+        if let actionMapping = self.actionMappings[routeInfo.routeKey] {
+            try actionMapping.mapping(routeInfo.params)
+            return true
+        }
         // action
         if let action = self.actions[routeInfo.routeKey] {
             try action.target.routeAction(routeInfo.params)
