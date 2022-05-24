@@ -110,6 +110,8 @@ private extension Router {
             return true
         }
         
+        try validationPath(routeInfo: routeInfo)
+        
         // MARK: Module handle
         // actionMapping
         if let actionMapping = self.actionMappings[routeInfo.routeKey] {
@@ -139,6 +141,12 @@ private extension Router {
         throw RouteError.notFound(newRoute)
     }
     
+    static func validationPath(routeInfo: RouteInfo) throws {
+        guard !routeInfo.path.isEmpty else {
+            throw RouteError.parseFailure("not found path from: \(routeInfo.originalRoute)")
+        }
+    }
+    
     static func validationRequiredInfo(requriedable: RouteMappingParamsRequriedable, routeInfo: RouteInfo) throws {
         let routeParamsKeys = routeInfo.params.keys.map({ $0 })
         let diffable = requriedable.requiredInfo.diffable(from: routeParamsKeys)
@@ -161,10 +169,6 @@ private extension Router {
         
         guard let host = routeComponents.host, !host.isEmpty else {
             throw RouteError.parseFailure("not found host from: \(route)")
-        }
-        
-        guard !routeComponents.path.isEmpty else {
-            throw RouteError.parseFailure("not found path from: \(route)")
         }
         
         let queries = (routeComponents.queryItems ?? [])
