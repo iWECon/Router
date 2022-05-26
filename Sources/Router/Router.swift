@@ -159,7 +159,11 @@ private extension Router {
     /// Check scheme, host and path
     /// - Parameter route: route
     static func parseRoute(_ route: String, transition: RouteTransition) throws -> RouteInfo {
-        guard let routeComponents: URLComponents = URLComponents(string: route) else {
+        
+        // fix can't conver route to URL when route contains chineses
+        let routeEncoding = route.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? route
+        
+        guard let routeComponents: URLComponents = URLComponents(string: routeEncoding) else {
             throw RouteError.invalid(route: route)
         }
         
