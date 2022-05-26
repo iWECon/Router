@@ -25,7 +25,7 @@ struct ConvertPathRouteProvider: RouteProvider {
         guard route.contains("path=") else {
             return nil
         }
-        let components = URLComponents(string: route)
+        let components = URLComponents(string: route.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)!)
         let path = components?.queryItems?.filter({ $0.name == "path" }).first?.value
         if path?.contains("/") == true {
             let info = path?.components(separatedBy: "/")
@@ -64,7 +64,7 @@ struct ConvertClassNameRouteProvider: RouteProvider {
         guard route.contains("className=") else {
             return nil
         }
-        let components = URLComponents(string: route)
+        let components = URLComponents(string: route.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)!)
         let params = components?.queryItems?.filter({ $0.value != nil }).map({ ($0.name, $0.value!) }) ?? []
         let dict = Dictionary(uniqueKeysWithValues: params)
         let className = params.filter({ $0.0 == "className" }).first?.1 ?? ""
@@ -107,4 +107,12 @@ class ConvertTests: XCTestCase {
         XCTAssertTrue(Router.handle(route: route))
     }
 
+    func testConvert4() throws { // test contains chineses
+        Router.load(mapping: RouteMapping(group: "", maps: [
+            .action("base/updateResource?{*resourceId}", target: ConvertAction.self)
+        ]))
+        Router.provider = ConvertPathRouteProvider()
+        let route = "native://?path=base/updateResource&resourceId=10086&name=你好啊"
+        XCTAssertTrue(Router.handle(route: route))
+    }
 }
