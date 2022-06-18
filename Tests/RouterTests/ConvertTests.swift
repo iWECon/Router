@@ -21,7 +21,7 @@ struct ConvertAction: RouteAction {
 }
 
 struct ConvertPathRouteProvider: RouteProvider {
-    func parseRoute(_ route: String) throws -> ParseInfo? {
+    func transform(route: String) throws -> ParseInfo? {
         guard route.contains("path=") else {
             return nil
         }
@@ -42,7 +42,7 @@ struct ConvertPathRouteProvider: RouteProvider {
 }
 
 struct ConvertModuleActionRouteProvider: RouteProvider {
-    func parseRoute(_ route: String) throws -> ParseInfo? {
+    func transform(route: String) throws -> ParseInfo? {
         guard route.contains("module=") else {
             return nil
         }
@@ -60,7 +60,7 @@ struct ConvertClassNameRouteProvider: RouteProvider {
     var mapping: [String: String] = [
         "WXMomentsController": "native://community/moments"
     ]
-    func parseRoute(_ route: String) throws -> ParseInfo? {
+    func transform(route: String) throws -> ParseInfo? {
         guard route.contains("className=") else {
             return nil
         }

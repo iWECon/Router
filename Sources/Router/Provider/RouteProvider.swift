@@ -16,12 +16,12 @@ public protocol RouteProvider {
     /// Error catch when route handle happend error.
     func errorCatch(_ error: RouteError)
     
-    /// Parse route with yourself.
+    /// Transform the receiving route.
     /// Convert other routes to compatible routes.
     ///
     /// - Parameter route: route
     /// - Returns: newRoute or nil (nil means no conversion required).
-    func parseRoute(_ route: String) throws -> ParseInfo?
+    func transform(route: String) throws -> ParseInfo?
     
     /// Make a UIViewController with UIViewController.Type.
     /// - Returns: return a valid controller, return nil if can't create controller with type.
@@ -46,7 +46,7 @@ public protocol RouteProvider {
 
 extension RouteProvider {
     public func processible(_ routeInfo: RouteInfo) throws { }
-    public func parseRoute(_ route: String) throws -> ParseInfo? {
+    public func transform(route: String) -> ParseInfo? {
         nil
     }
     

@@ -98,7 +98,7 @@ private extension Router {
             throw RouteError.empty
         }
         
-        let newRoute = try self.provider.parseRoute(route)?._route ?? route
+        let newRoute = try self.provider.transform(route: route)?._route ?? route
         let routeInfo = try self.parseRoute(newRoute, transition: transition)
         try self.provider.processible(routeInfo)
         
