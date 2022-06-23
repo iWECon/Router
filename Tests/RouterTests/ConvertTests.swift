@@ -25,13 +25,13 @@ struct ConvertPathRouteProvider: RouteProvider {
         guard route.contains("path=") else {
             return nil
         }
-        let components = URLComponents(string: route)
-        let path = components?.queryItems?.filter({ $0.name == "path" }).first?.value
+        let components = try RouteComponents(route: route)
+        let path = components.queryItems?.filter({ $0.name == "path" }).first?.value
         if path?.contains("/") == true {
             let info = path?.components(separatedBy: "/")
             let group = info?.first ?? ""
             let path = info?.last ?? ""
-            let params = components?.queryItems?.filter({ $0.name != "path" })
+            let params = components.queryItems?.filter({ $0.name != "path" })
                 .filter({ $0.value != nil })
                 .map({ ($0.name, $0.value!) }) ?? []
             
@@ -46,8 +46,8 @@ struct ConvertModuleActionRouteProvider: RouteProvider {
         guard route.contains("module=") else {
             return nil
         }
-        let components = URLComponents(string: route)
-        let params = components?.queryItems?.filter({ $0.value != nil }).map({ ($0.name, $0.value!) }) ?? []
+        let components = try RouteComponents(route: route)
+        let params = components.queryItems?.filter({ $0.value != nil }).map({ ($0.name, $0.value!) }) ?? []
         let dict = Dictionary(uniqueKeysWithValues: params)
         let module = params.filter({ $0.0 == "module" }).first?.1 ?? ""
         let action = params.filter({ $0.0 == "action" }).first?.1 ?? ""
@@ -64,8 +64,8 @@ struct ConvertClassNameRouteProvider: RouteProvider {
         guard route.contains("className=") else {
             return nil
         }
-        let components = URLComponents(string: route)
-        let params = components?.queryItems?.filter({ $0.value != nil }).map({ ($0.name, $0.value!) }) ?? []
+        let components = try RouteComponents(route: route)
+        let params = components.queryItems?.filter({ $0.value != nil }).map({ ($0.name, $0.value!) }) ?? []
         let dict = Dictionary(uniqueKeysWithValues: params)
         let className = params.filter({ $0.0 == "className" }).first?.1 ?? ""
         let finalParams = dict.filter({ $0.key != "className" })
@@ -107,4 +107,12 @@ class ConvertTests: XCTestCase {
         XCTAssertTrue(Router.handle(route: route))
     }
 
+    func testConvert4() throws { // test contains chineses
+        Router.load(mapping: RouteMapping(group: "", maps: [
+            .action("base/updateResource?{*resourceId}", target: ConvertAction.self)
+        ]))
+        Router.provider = ConvertPathRouteProvider()
+        let route = "native://?path=base/updateResource&resourceId=10086&name=你好啊"
+        XCTAssertTrue(Router.handle(route: route))
+    }
 }
