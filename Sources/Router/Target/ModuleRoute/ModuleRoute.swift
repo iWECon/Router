@@ -69,6 +69,14 @@ public extension Router {
                 try destination.processible()
                 try mapping(params ?? [:])
                 return true
+                
+            case .route(let moduleRoute):
+                try destination.processible()
+                return Router.navigate(to: moduleRoute)
+                
+            case .remote(let remoteRoute):
+                try destination.processible()
+                return Router.handle(route: remoteRoute)
             }
         } catch {
             self.errorForward(error)

@@ -23,6 +23,11 @@ import UIKit
 /// case controller(_ controller: UIViewController, transition: RouteTransition = .push)
 /// ```
 ///
+/// * use other `ModuleRoute`
+/// ```swift
+/// case route(_ moduleRoute: ModuleRoute)
+/// ```
+///
 public enum ModuleRouteTarget: CustomStringConvertible {
     
     /// execute something action with `RouteAction`
@@ -34,6 +39,12 @@ public enum ModuleRouteTarget: CustomStringConvertible {
     /// show a `UIViewController`
     case controller(_ controller: UIViewController, transition: RouteTransition = .push())
     
+    /// use other `ModuleRoute`
+    case route(_ moduleRoute: ModuleRoute)
+    
+    /// use remote route from server
+    case remote(_ remoteRoute: String)
+    
     public var description: String {
         switch self {
         case .action(let action, let params):
@@ -44,6 +55,12 @@ public enum ModuleRouteTarget: CustomStringConvertible {
             
         case .controller(let controller, let transition):
             return " ModuleRouteTarget { controller: \(String(describing: controller.self)) with transition: \(transition) }"
+            
+        case .route(let moduleRoute):
+            return " ModuleRoute:\(moduleRoute.description)"
+            
+        case .remote(let remoteRoute):
+            return " ModuleRouteTarget { remoteRoute: \(remoteRoute) }"
         }
     }
 }
