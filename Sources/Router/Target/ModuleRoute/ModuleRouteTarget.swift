@@ -39,6 +39,9 @@ public enum ModuleRouteTarget: CustomStringConvertible {
     /// show a `UIViewController`
     case controller(_ controller: UIViewController, transition: RouteTransition = .push())
     
+    /// a web
+    case web(_ webURLString: String)
+    
     /// use other `ModuleRoute`
     case route(_ moduleRoute: ModuleRoute)
     
@@ -55,6 +58,9 @@ public enum ModuleRouteTarget: CustomStringConvertible {
             
         case .controller(let controller, let transition):
             return " ModuleRouteTarget { controller: \(String(describing: controller.self)) with transition: \(transition) }"
+            
+        case .web(let webURLString):
+            return " ModuleRouteTarget { WebURLString: \(webURLString) }"
             
         case .route(let moduleRoute):
             return " ModuleRoute:\(moduleRoute.description)"

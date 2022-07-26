@@ -70,6 +70,10 @@ public extension Router {
                 try mapping(params ?? [:])
                 return true
                 
+            case .web(let webURLString):
+                try destination.processible()
+                return Router.handle(route: webURLString)
+                
             case .route(let moduleRoute):
                 try destination.processible()
                 return Router.navigate(to: moduleRoute)
