@@ -54,32 +54,28 @@ public extension Router {
     
     @discardableResult static func navigate(to destination: ModuleRoute) -> Bool {
         do {
+            try destination.processible()
+            
             switch destination.target {
             case .controller(let controller, let transition):
-                try destination.processible()
                 try self.transitionChain(controller: controller, transition: transition)
                 return true
                 
             case .action(let action, let params):
-                try destination.processible()
                 try action.routeAction(params ?? [:])
                 return true
                 
             case .actionMapping(let mapping, let params):
-                try destination.processible()
                 try mapping(params ?? [:])
                 return true
                 
             case .web(let webURLString):
-                try destination.processible()
                 return Router.handle(route: webURLString)
                 
             case .route(let moduleRoute):
-                try destination.processible()
                 return Router.navigate(to: moduleRoute)
                 
             case .remote(let remoteRoute):
-                try destination.processible()
                 return Router.handle(route: remoteRoute)
             }
         } catch {
