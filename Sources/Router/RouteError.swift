@@ -4,7 +4,7 @@ import Foundation
 ///
 /// To catch error with RouteProvider
 ///
-public enum RouteError: Swift.Error, LocalizedError {
+public enum RouteError: Swift.Error, LocalizedError, CustomStringConvertible {
     
     /// the `route` is empty (length is zero)
     case empty
@@ -44,10 +44,14 @@ public enum RouteError: Swift.Error, LocalizedError {
             return "❌ [.notFound] { \(reason) }"
             
         case .error(let error):
-            return "❌ [.error] \(error.localizedDescription)"
+            return "❌ [.error] [\(type(of: error))] \(error.localizedDescription)"
             
         case .reason(let reason):
             return "❌ [.reason] \(reason)"
         }
+    }
+    
+    public var description: String {
+        errorDescription!
     }
 }

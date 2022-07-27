@@ -115,4 +115,19 @@ class ConvertTests: XCTestCase {
         let route = "native://?path=base/updateResource&resourceId=10086&name=你好啊"
         XCTAssertTrue(Router.handle(route: route))
     }
+    
+    enum ErrorRoute: ModuleRoute {
+        case test
+        
+        func processible() throws {
+            throw ModuleRouteError.unprocessed(reason: "error test")
+        }
+        var target: ModuleRouteTarget {
+            return .controller(UIViewController())
+        }
+    }
+    
+    func testError() throws {
+        Router.navigate(to: ErrorRoute.test)
+    }
 }
