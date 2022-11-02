@@ -184,7 +184,9 @@ private extension Router {
                 return (queryItem.name, removingPercentValue)
             }
         
-        var params = Dictionary(uniqueKeysWithValues: queries)
+        // fix crash when multiple same key in `queries`
+        // var params = Dictionary(uniqueKeysWithValues: queries)
+        var params = Dictionary(queries, uniquingKeysWith: { _, arg2 in arg2 })
         params.merge([
             "__group": host,
             "__path": routeComponents.path
