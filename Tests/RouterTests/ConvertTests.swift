@@ -100,7 +100,7 @@ class ConvertTests: XCTestCase {
     func testConvert3() throws {
         // native://?native://?className=WXMomentsController&userId=10086
         Router.load(mapping: RouteMapping(group: "community", maps: [
-            .route("/moments?{*userId}", target: UIViewController.self)
+            .route("/moments?{*userId}", target: UserController.self)
         ]))
         Router.provider = ConvertClassNameRouteProvider()
         let route = "native://?className=WXMomentsController&userId=10086"

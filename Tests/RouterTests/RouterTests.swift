@@ -12,7 +12,7 @@ enum MessageRoute: ModuleRoute {
     }
 }
 
-final class UserController: UIViewController {
+final class UserController: UIViewController, RouteMapTargetController {
     
     struct User {
         let name: String
@@ -40,7 +40,7 @@ final class RouterTests: XCTestCase {
         
         let userMapping = RouteMapping(group: "user", maps: [
             .route("/info?{*id/userId}", target: UserController.self),
-            .route("/account?{*id/userId}", target: UIViewController.self),
+            .route("/account?{*id/userId}", target: UserController.self),
             
             // actions
             .action("/updateResources", target: BaseActions.self),

@@ -4,7 +4,7 @@ import UIKit
 public enum RouteMap {
     
     /// show a `UIViewController`
-    case route(_ path: String, target: UIViewController.Type)
+    case route(_ path: String, target: RouteMapTargetControllerProvider.Type)
     
     /// perform actions
     case action(_ path: String, target: RouteAction.Type)
