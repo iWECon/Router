@@ -23,9 +23,9 @@ public protocol RouteProvider {
     /// - Returns: newRoute or nil (nil means no conversion required).
     func transform(route: String) throws -> ParseInfo?
     
-    /// Make a UIViewController with UIViewController.Type.
+    /// Make a UIViewController with RouteMapTargetControllerProvider.Type.
     /// - Returns: return a valid controller, return nil if can't create controller with type.
-    func makeController(type: UIViewController.Type) -> UIViewController?
+    func makeController(type: RouteMapTargetControllerProvider.Type) -> UIViewController?
     
     /// Make web controller with RouteInfo.
     /// If need set url, use routeInfo.originalRoute to set it.
@@ -50,7 +50,7 @@ extension RouteProvider {
         nil
     }
     
-    public func makeController(type: UIViewController.Type) -> UIViewController? {
+    public func makeController(type: RouteMapTargetControllerProvider.Type) -> UIViewController? {
         type.init()
     }
     

@@ -52,12 +52,13 @@ public extension Router {
         
         for route in remote.routes {
             guard let clazzName = NSClassFromString(route.targetName),
-                  let vcTarget = clazzName as? UIViewController.Type
+                  let vcTarget = clazzName as? UIViewController.Type,
+                  let vcTargetProvider = vcTarget as? RouteMapTargetControllerProvider.Type
             else {
                 continue
             }
             let key = route.group + route.path
-            _routes[key] = RouteMapping.Route(target: vcTarget, requiredInfo: RouteMapping.RequiredInfo(route.path))
+            _routes[key] = RouteMapping.Route(target: vcTargetProvider, requiredInfo: RouteMapping.RequiredInfo(route.path))
         }
         
         for action in remote.actions {

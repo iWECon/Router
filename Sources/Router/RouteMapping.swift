@@ -69,7 +69,7 @@ extension RouteMapping {
     
     // MARK: Route
     struct Route: CustomStringConvertible, RouteMappingParamsRequriedable {
-        let target: UIViewController.Type
+        let target: RouteMapTargetControllerProvider.Type
         var requiredInfo: RequiredInfo
         
         var description: String {
