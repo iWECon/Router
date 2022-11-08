@@ -48,6 +48,9 @@ public enum ModuleRouteTarget: CustomStringConvertible {
     /// use remote route from server
     case remote(_ remoteRoute: String)
     
+    /// Invalid, will throw an error `ModuleRouteError.invalid(<#reason#>)`
+    case invalid(_ reason: String? = nil)
+    
     public var description: String {
         switch self {
         case .action(let action, let params):
@@ -67,6 +70,9 @@ public enum ModuleRouteTarget: CustomStringConvertible {
             
         case .remote(let remoteRoute):
             return " ModuleRouteTarget { remoteRoute: \(remoteRoute) }"
+            
+        case .invalid(let reason):
+            return " ModuleRouteTarget { invalid: \(reason ?? "invalid") }"
         }
     }
 }

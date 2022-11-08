@@ -77,6 +77,9 @@ public extension Router {
                 
             case .remote(let remoteRoute):
                 return Router.handle(route: remoteRoute)
+                
+            case .invalid(let reason):
+                throw ModuleRouteError.invalid(reason: reason)
             }
         } catch {
             self.errorForward(error)
