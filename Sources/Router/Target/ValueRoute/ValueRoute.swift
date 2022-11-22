@@ -5,37 +5,28 @@
 import Foundation
 
 /**
- 
- enum RechargeRoute {
+ enum PickerRoute {
     case isShowing
  }
  
- extension RechargeRoute: ValueRoute {
+ extension PickerRoute: ValueRoute {
     var value: Value {
         switch self {
         case .isShowing:
-            return CatchValue(get: Recharge.shared.isShowing) {
+            return CatchValue(get: Picker.shared.isShowing) {
                 // `value set` block
             }
         }
     }
  }
- 
- let value: Value = Router.value(from: RechargeRoute.isShowing)
- value.value // `Bool value`
- value.value = false // call `value set` block
  */
 
-public protocol ValueRoute {
-    var value: Value { get }
-}
-
 public final class Value {
-    public typealias Get = () throws -> Any?
-    public typealias Set = (Any?) throws -> Void
+    public typealias GetValueClosure = () throws -> Any?
+    public typealias SetValueClosure = (Any?) throws -> Void
     
-    private let get: Get?
-    private let set: Set?
+    private let get: GetValueClosure?
+    private let set: SetValueClosure?
     
     public var value: Any? {
         get {
@@ -55,16 +46,25 @@ public final class Value {
         }
     }
     
-    public init(get: Get?, set: Set?) {
+    public init(get: GetValueClosure?, set: SetValueClosure? = nil) {
+        self.get = get
+        self.set = set
+    }
+    
+    public init(get: @autoclosure @escaping GetValueClosure, set: SetValueClosure? = nil) {
         self.get = get
         self.set = set
     }
 }
 
+public protocol ValueRoute {
+    var value: Value { get }
+}
+
 extension Router {
     
     @discardableResult
-    static func value(from: ValueRoute) -> Value {
+    public static func value(from: ValueRoute) -> Value {
         from.value
     }
 }
