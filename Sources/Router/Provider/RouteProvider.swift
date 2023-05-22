@@ -42,6 +42,12 @@ public protocol RouteProvider {
     
     /// Transition from current controller to another controller did finish
     func transitionDidFinish(controller: UIViewController, transition: RouteTransition) throws
+    
+    /// Will execute route handle. This action run before `trasitionWillStart(controller:transition:)`
+    func willExecute(routeInfo: RouteInfo) throws
+    
+    /// Did executed route handle.
+    func didExecuted(routeInfo: RouteInfo)
 }
 
 extension RouteProvider {
@@ -72,4 +78,7 @@ extension RouteProvider {
     public func transitionWillStart(controller: UIViewController, transition: RouteTransition) throws { }
     public func transition(controller: UIViewController, transition: RouteTransition) throws { }
     public func transitionDidFinish(controller: UIViewController, transition: RouteTransition) throws { }
+    
+    public func willExecute(routeInfo: RouteInfo) throws { }
+    public func didExecuted(routeInfo: RouteInfo) { }
 }

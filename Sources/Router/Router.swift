@@ -113,6 +113,11 @@ private extension Router {
         
         try validationPath(routeInfo: routeInfo)
         
+        try self.provider.willExecute(routeInfo: routeInfo)
+        defer {
+            self.provider.didExecuted(routeInfo: routeInfo)
+        }
+        
         // MARK: Module handle
         // actionMapping
         if let actionMapping = self.actionMappings[routeInfo.routeKey] {
